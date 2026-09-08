@@ -1,0 +1,17 @@
+[
+  {
+    "name": "KM6-QTT2.200903.001-V4.20201026.img",
+    "size": 1602981384,
+    "sha256": "e9c5b585374b0d2cd32c471eb171ed7fce46d5f2f689248d79ba281bc8cc1a44"
+  },
+  {
+    "name": "V3_setup_V3.1.6.exe",
+    "size": 43602356,
+    "sha256": "e32dcbf6a485f0985a1119831289954b65b88496c684a48a8e69deab1c389f8b"
+  },
+  {
+    "name": "modified-km6.img",
+    "size": 1602981384,
+    "sha256": "876c03ae71454c9981b8c75b0dc581f275ce6f99e09c4e1303d78308385a65a7"
+  }
+]

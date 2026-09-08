@@ -1,0 +1,11 @@
+# Track only the curated source tree and this policy.
+/*
+!/.gitignore
+!/source/
+/source/**/__pycache__/
+/source/**/*.pyc
+/source/**/*.o
+/source/**/*.ko
+/source/**/*.img
+/source/**/*.img.xz
+/source/**/*.exe

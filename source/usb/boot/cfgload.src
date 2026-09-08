@@ -1,0 +1,12 @@
+# KM6 USB-only Debian test. Uses source; no persistent environment changes.
+usb start
+setenv devtype usb
+setenv devnum 0
+setenv distro_bootpart 1
+setenv cmd_read "fatload usb 0:1"
+setenv loadaddr 0x08000000
+setenv box s905x4_generic_gigabit
+if fatload usb 0:1 ${loadaddr} bootscript; then
+fatwrite usb 0:1 ${loadaddr} DEBENTRY.BIN 40
+source ${loadaddr}
+fi
