@@ -1,0 +1,1 @@
+if test "${km6_next}" = "android"; then setenv km6_next; saveenv; run storeboot; else setenv km6_next android; saveenv; run km6_internal; run bootfromusb; setenv km6_next; saveenv; run storeboot; fi

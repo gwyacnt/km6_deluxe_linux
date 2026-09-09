@@ -5,6 +5,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import shutil
 import struct
 import subprocess
 from plan_storage import DEVICE_SIZE, MIB, parse_mpt, propose
@@ -43,6 +44,8 @@ def main():
     parser.add_argument('--apply', action='store_true')
     args = parser.parse_args()
     require(os.geteuid() == 0, 'Run on the KM6 as root')
+    for tool in ('findmnt', 'lsblk', 'losetup', 'e2fsck', 'resize2fs', 'modprobe', 'dmsetup', 'mkfs.vfat', 'mkfs.ext4'):
+        require(shutil.which(tool) is not None, 'Install required tool before applying layout: ' + tool)
     size = int(Path('/sys/class/block/mmcblk1/size').read_text()) * 512
     require(size == DEVICE_SIZE, 'Wrong eMMC size')
     require(Path('/sys/class/block/mmcblk1/device/name').read_text().strip() == 'A1511X', 'Wrong eMMC model')
@@ -67,7 +70,7 @@ def main():
                                               '--output', 'NAME,RO,OFFSET,SIZELIMIT'], text=True))['loopdevices']
     for loop in loops:
         require(loop['ro'] and int(loop['offset']) == parts[-1]['offset'] and
-                int(loop['sizelimit']) == parts[-1]['size'], 'Unexpected existing loop mapping')
+                0 < int(loop['sizelimit']) <= parts[-1]['size'], 'Unexpected existing loop mapping')
     print('Validated original eMMC metadata and signed candidates.', flush=True)
     print('Android data: 32 GiB; Linux boot: 256 MiB; Linux root: %.2f GiB.' % (expected[-1]['size'] / 2**30), flush=True)
     if not args.apply:
@@ -78,21 +81,27 @@ def main():
     backups.mkdir(mode=0o700, exist_ok=True)
     for name, data in old.items():
         path = backups / (name + '.bin')
-        require(not path.exists(), 'Existing transaction backup; inspect previous attempt before retrying')
-        path.write_bytes(data)
-        path.chmod(0o600)
+        if path.exists():
+            require(path.read_bytes() == data, 'Existing transaction backup differs from original metadata')
+        else:
+            path.write_bytes(data)
+            path.chmod(0o600)
     os.sync()
     for loop in loops:
         command('losetup', '-d', loop['name'])
     android = command('losetup', '--find', '--show', '--offset', parts[-1]['offset'], '--sizelimit', parts[-1]['size'], DEVICE)
     try:
         command('e2fsck', '-f', '-y', android, allowed=(0, 1))
-        command('resize2fs', android, '32G')
+        # Android reserves the final 16 KiB for an optional encryption footer.
+        android_blocks = (expected[-3]['size'] - 16384) // 4096
+        command('resize2fs', android, android_blocks)
+        # Resizing can change quota accounting even when directory data is intact.
+        command('e2fsck', '-f', '-y', android, allowed=(0, 1))
         command('e2fsck', '-f', '-n', android)
         with open(android, 'rb', buffering=0) as f:
             f.seek(1024)
             superblock = f.read(1024)
-        require(struct.unpack_from('<I', superblock, 4)[0] == 8388608 and
+        require(struct.unpack_from('<I', superblock, 4)[0] == android_blocks and
                 struct.unpack_from('<I', superblock, 24)[0] == 2, 'Unexpected resized Android filesystem geometry')
     finally:
         command('losetup', '-d', android)
@@ -113,6 +122,8 @@ def main():
         require(read_region(offset, len(data)) == data, 'Metadata read-back mismatch')
 
     # No bootloader writes. These regions are all backed up above.
+    require(len(old['data_tail']) == 16384, 'Missing original Android footer reserve')
+    write_region(expected[-3]['offset'] + expected[-3]['size'] - 16384, old['data_tail'])
     write_region(1168 * MIB, (WORK / 'PARTITION.vbmeta').read_bytes().ljust(4096, b'\0'))
     slot = (WORK / 'dtb-slot.bin').read_bytes()
     write_region(40 * MIB, slot)

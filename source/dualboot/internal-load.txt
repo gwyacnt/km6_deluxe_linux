@@ -1,0 +1,1 @@
+setenv devtype mmc; setenv devnum 1; setenv distro_bootpart 12; setenv cmd_read "fatload mmc 1:12"; setenv loadaddr 0x08000000; if fatload mmc 1:12 ${loadaddr} bootscript; then source ${loadaddr}; fi

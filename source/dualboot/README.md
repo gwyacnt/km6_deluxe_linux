@@ -4,7 +4,8 @@ Target: a timed HDMI menu on every normal power-on, defaulting to Android,
 with Debian as the second choice. Both systems will use separate areas of
 internal eMMC. The final system must not require a USB stick or the reset button.
 
-**This is not an installer yet. No internal-storage installation has been tested.**
+**Device-specific installation scripts are under test. Internal storage has been
+prepared and the Debian copy verified; internal OS boot is not yet confirmed.**
 
 ## Menu prototype
 
@@ -155,3 +156,39 @@ binary is installed. Internal boot with these mappings remains untested.
 preserved GCC-14 toolchain and cross-libc files. `test_map.py` exercises the
 mapper against the offline table candidate and rejects damaged headers,
 checksums, partition overlaps and an incorrect Android data size.
+
+## Internal installation status, 2026-09-09
+
+The 64 GB test unit now has the proposed MPT layout installed. Android data
+was shrunk to 32 GiB minus its 16 KiB footer reserve; the original footer was
+relocated to the new partition end. Both Android device-tree slots, signed
+vbmeta and the partition table were read back and verified. The user-area
+bootloader and Android system partition offsets were preserved.
+
+`make_install_manifest.py` records hashes of the original metadata and the
+candidates. `install_layout.py` requires those exact inputs, checks the device,
+backs up metadata, shrinks and checks Android data, installs the metadata and
+formats the dedicated Linux regions. It is specific to this device and its
+recorded starting state, not a general installer. Do not rerun it after the
+layout is installed.
+
+`copy_debian.py` copies the persistent USB installation while desktop, VNC and
+Tailscale services are stopped. It preserves sparse files, ownership and ACLs,
+installs the internal boot configuration, checks the kernel and custom driver
+hashes, and checks both unmounted target filesystems. The existing user and
+application configuration are included. One corrupt, implausibly large Firefox
+internal data file was quarantined on the USB before copying; private backups
+and the working directory are excluded from the internal installation.
+
+`internal-load.txt` loads the boot script from the dedicated FAT partition.
+The vendor partition index is zero-based and parsed as hexadecimal: Linux boot
+is index 18 decimal, expressed as `mmc 1:12`. `bootcmd-internal.txt` tries that
+loader, then the existing USB fallback, then Android. `activate_boot.py`
+validates installed metadata and filesystems before changing the environment;
+without `--apply` it only validates. Activation backs up the CRC-valid
+environment and verifies that only `km6_internal` and `bootcmd` changed.
+
+The internal root uses `/dev/mapper/km6-linuxroot`; its boot filesystem uses
+`/dev/mapper/km6-linuxboot`. Final acceptance remains Android timeout boot and
+Debian desktop boot with the USB stick removed, including SSH, Ethernet,
+audio and persistent services. Keep the working USB available during testing.
