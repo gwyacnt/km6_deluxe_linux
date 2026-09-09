@@ -1,0 +1,15 @@
+#!/bin/sh
+# SPDX-License-Identifier: MIT
+PREREQ=""
+prereqs() { echo "$PREREQ"; }
+case "${1:-}" in prereqs) prereqs; exit 0 ;; esac
+set -eu
+. /usr/share/initramfs-tools/hook-functions
+copy_exec /usr/local/lib/km6-dualboot/km6-menu /bin/km6-menu
+copy_exec /usr/bin/openvt /usr/lib/km6-dualboot/openvt
+copy_exec /usr/bin/setfont /bin/setfont
+copy_exec /usr/bin/fw_printenv /usr/bin/fw_printenv
+ln -sf fw_printenv "${DESTDIR}/usr/bin/fw_setenv"
+mkdir -p "${DESTDIR}/etc" "${DESTDIR}/usr/share/consolefonts"
+cp /etc/km6-fw_env.config "${DESTDIR}/etc/km6-fw_env.config"
+gzip -dc /usr/share/consolefonts/Lat15-TerminusBold32x16.psf.gz > "${DESTDIR}/usr/share/consolefonts/km6.psf"

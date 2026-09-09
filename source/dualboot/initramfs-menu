@@ -1,0 +1,41 @@
+#!/bin/sh
+# SPDX-License-Identifier: MIT
+# init-bottom: the root filesystem is mounted, before the real init starts.
+PREREQ=""
+prereqs() { echo "$PREREQ"; }
+case "${1:-}" in prereqs) prereqs; exit 0 ;; esac
+case " $(cat /proc/cmdline) " in *' km6_menu=enabled '*) ;; *) exit 0 ;; esac
+export TERM=linux
+config=/etc/km6-fw_env.config
+next=$(fw_printenv -c "$config" -n km6_next 2>/dev/null) || next=
+# Reset-held recovery can start USB directly, bypassing our bootcmd.
+# In that case continue into Debian rather than trap recovery in an Android loop.
+if [ "$next" != android ]; then
+    echo 'KM6: Android fallback is not armed; continuing to Debian.' >/dev/console
+    exit 0
+fi
+old_printk=$(cat /proc/sys/kernel/printk)
+echo 3 >/proc/sys/kernel/printk
+rm -f /run/km6-menu-choice
+/usr/lib/km6-dualboot/openvt -c 8 -s -w -- sh -c '
+    setfont /usr/share/consolefonts/km6.psf
+    /bin/km6-menu --timeout 15
+    echo $? > /run/km6-menu-choice
+'
+choice=$(cat /run/km6-menu-choice 2>/dev/null) || choice=2
+echo "$old_printk" >/proc/sys/kernel/printk
+if [ "$choice" = 10 ]; then
+    if fw_setenv -c "$config" km6_next; then
+        next=$(fw_printenv -c "$config" -n km6_next 2>/dev/null) || next=
+        if [ -z "$next" ]; then
+            echo 'KM6: Debian selected; Android fallback cleared.' >/dev/console
+            chvt 1
+            exit 0
+        fi
+    fi
+    echo 'KM6: could not clear fallback; rebooting to Android.' >/dev/console
+fi
+# The bootloader consumes and clears the armed flag, then boots Android.
+sync
+reboot -f
+while :; do sleep 1; done
