@@ -1,0 +1,19 @@
+#!/bin/sh
+# SPDX-License-Identifier: MIT
+PREREQ=""
+prereqs() { echo "$PREREQ"; }
+case "${1:-}" in prereqs) prereqs; exit 0 ;; esac
+case "${ROOT:-}" in /dev/mapper/km6-linuxroot) ;; *) exit 0 ;; esac
+. /scripts/functions
+modprobe dm_mod || panic 'KM6: device mapper module failed'
+count=0
+while [ ! -b /dev/mmcblk1 ]; do
+    count=$((count + 1))
+    [ "$count" -lt 15 ] || panic 'KM6: internal eMMC did not appear'
+    sleep 1
+done
+/bin/km6-mpt-map > /run/km6-mappings || panic 'KM6: internal partition validation failed'
+while read -r name table; do
+    dmsetup create "$name" --table "$table" || panic "KM6: cannot map $name"
+done < /run/km6-mappings
+dmsetup mknodes
