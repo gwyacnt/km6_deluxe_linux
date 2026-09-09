@@ -6,7 +6,7 @@ Enable USB Linux boot on the tested Mecool KM6 Deluxe Rev2 (HDMI-marked chassis,
 
 Modified firmware flashes successfully. Android works after recovery/factory reset, as with the stock image. Debian USB boots to an HDMI terminal. Manually loading the Maxio driver enabled Ethernet DHCP at 100 Mbps/full duplex.
 
-The automatic-Ethernet image has a reported failed boot step. The failing unit and cause remain unknown. Automatic Ethernet, SSH and Gigabit operation are not validated. CoreELEC boot remains unresolved. No Linux installation to internal storage has been tested.
+The first automatic-Ethernet image skipped our module because upstream lists `maxio` as built in. Revision 2 uses the distinct module name `km6_maxio`, orders networkd after module loading, and saves an automatic boot report. On 2026-09-09 the user reported an Ethernet IP address after booting revision 2. Startup logs, SSH and Gigabit operation still await verification. CoreELEC boot remains unresolved. No Linux installation to internal storage has been tested.
 
 ## Why modify the firmware?
 

@@ -1,0 +1,15 @@
+[Unit]
+Description=KM6 automatic Ethernet diagnostic report
+After=systemd-networkd.service systemd-modules-load.service
+Wants=systemd-networkd.service
+RequiresMountsFor=/boot
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh /usr/local/sbin/km6-network-report
+TimeoutStartSec=90
+StandardOutput=journal+console
+StandardError=journal+console
+
+[Install]
+WantedBy=multi-user.target

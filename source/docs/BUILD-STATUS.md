@@ -1,17 +1,16 @@
-# Build status after folder organization
+# Current local build recipe
 
-Source has been collected and Python workspace paths adjusted. Original working files are preserved in ../../archive. No images were rebuilt or written to USB during organization.
+Run from the KM6 workspace, using preserved dependencies under `archive/`:
 
-Current local entry points (run from KM6):
-
-```
-python3 source/firmware/build_modified.py
-python3 source/usb/prepare.py
+```sh
+python3 source/drivers/maxio/build.py
 python3 source/usb/integrate.py
 ```
 
-These are build commands, not a sequence to run blindly. The firmware builder expects archive/Stock and archive/output/analysis. USB preparation expects an extracted original image, upstream boot templates and local mcopy. Integration expects the prepared baseline image, original extracted rootfs, a built Maxio module and a complete staged module tree processed by depmod. It overwrites generated image files in archive/output.
+The driver build copies maintained source into the ignored `archive/output/debian-ethernet/maxio/module-v2/` build directory and uses the matching prepared kernel headers and cross-toolchain. Integration extracts the original complete kernel module tree from `archive/output/debian-usb/rootfs.ext4`, adds `km6_maxio.ko`, runs depmod and creates `archive/output/debian-usb/autoload-v2/debian-km6-network-v2.img`. It preserves earlier images. `KM6_WORKDIR` overrides the archive location.
 
-Before a standalone build release: provide pinned dependency fetching, clean cross-compilation instructions for Maxio and kernel host tools, automatic input extraction/staging, and fresh-workspace verification. Current recipes depend on the archived build inputs. Driver source edits require rebuilding the module before integration; integration currently consumes the archived compiled module.
+Integration requires the verified boot-compatible baseline `archive/output/debian-usb/debian.img`, original extracted root filesystem and local mcopy. It adds the files in `usb/rootfs/`, enables the automatic report service, copies a report helper into FAT, verifies all installed file contents and checks filesystem consistency. It operates on regular files only and does not write a USB device. The retained firmware builder and USB baseline preparation script remain available separately.
 
-Archived reports and scripts may contain old absolute paths and superseded status statements. They are historical evidence, not the maintained source entry points. The original Project.md includes restrictions later superseded by explicit user authorization; it is retained as historical context only.
+The source now drives module building and image integration, but an independent fresh-checkout build still needs dependency downloads, exact header host-tool preparation and baseline extraction automated. The cross-compiler differs from the upstream kernel compiler (GCC 14.2 versus 13.3); matching kernel headers and vermagic were verified.
+
+Historical reports in archive and the original project plan may contain superseded status statements and old absolute paths. See DEBIAN-CHANGES.md and the maintained README for current status.
