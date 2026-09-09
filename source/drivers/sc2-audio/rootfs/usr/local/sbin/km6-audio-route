@@ -1,0 +1,16 @@
+#!/bin/sh
+# Configure only the experimental KM6 stereo card. No playback is started.
+set -eu
+card=KM6SC2HDMITEST
+n=0
+until amixer -c "$card" info >/dev/null 2>&1; do
+    n=$((n + 1))
+    [ "$n" -lt 30 ] || { echo 'KM6 audio card not available'; exit 1; }
+    sleep 1
+done
+amixer -q -c "$card" cset name='FRDDR_A SINK 1 SEL' 'OUT 2'
+amixer -q -c "$card" cset name='FRDDR_A SRC 1 EN Switch' on
+amixer -q -c "$card" cset name='TDMOUT_C SRC SEL' 'IN 0'
+amixer -q -c "$card" cset name='TOHDMITX I2S SRC' 'I2S C'
+amixer -q -c "$card" cset name='TOHDMITX Switch' on
+echo 'KM6 experimental stereo HDMI route configured'

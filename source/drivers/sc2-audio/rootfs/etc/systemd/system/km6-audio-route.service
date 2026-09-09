@@ -1,0 +1,12 @@
+[Unit]
+Description=Configure experimental KM6 stereo HDMI audio route
+After=systemd-modules-load.service sound.target alsa-restore.service
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh /usr/local/sbin/km6-audio-route
+TimeoutStartSec=40
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

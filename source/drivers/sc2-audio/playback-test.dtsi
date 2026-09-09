@@ -1,0 +1,85 @@
+/* SPDX-License-Identifier: GPL-2.0-or-later
+ * Experimental SC2 stereo FRDDR_A -> TDMOUT_C -> HDMI path.
+ * Derived from Linux v6.18 meson-sm1.dtsi and meson-g12a-u200.dts
+ * (BayLibre/Amlogic, GPL-2.0+ OR MIT). SC2 addresses/interrupts from stock KM6.
+ * Numeric references are verified against the exact baseline by the builder.
+ */
+&{/soc/bus@fe000000/hdmi-tx@300000} { phandle = <0x200>; };
+&{/soc/bus@fe000000} {
+    km6_audio_clkc: clock-controller@330000 {
+        compatible = "amlogic,sm1-audio-clkc";
+        reg = <0 0x330000 0 0xb4>;
+        #clock-cells = <1>;
+        #reset-cells = <1>;
+        power-domains = <0x10 10>;
+        clocks = <0x06 184>, <0x03 25>, <0x03 27>, <0x03 29>, <0x03 31>,
+                 <0x03 17>, <0x03 5>, <0x03 7>, <0x03 9>;
+        clock-names = "pclk", "mst_in0", "mst_in1", "mst_in2", "mst_in3",
+                      "mst_in4", "mst_in5", "mst_in6", "mst_in7";
+        resets = <0x09 32>;
+    };
+    km6_arb: reset-controller@330280 {
+        compatible = "amlogic,meson-sm1-audio-arb";
+        reg = <0 0x330280 0 4>;
+        #reset-cells = <1>;
+        clocks = <&km6_audio_clkc 29>;
+    };
+    km6_frddr: audio-controller@3301c0 {
+        compatible = "amlogic,sm1-frddr", "amlogic,axg-frddr";
+        reg = <0 0x3301c0 0 0x2c>;
+        #sound-dai-cells = <0>;
+        sound-name-prefix = "FRDDR_A";
+        interrupts = <0 36 1>;
+        clocks = <&km6_audio_clkc 38>;
+        resets = <&km6_arb 3>, <&km6_audio_clkc 9>;
+        reset-names = "arb", "rst";
+        amlogic,fifo-depth = <1024>;
+    };
+    km6_tdmout: audio-controller@330580 {
+        compatible = "amlogic,sm1-tdmout";
+        reg = <0 0x330580 0 0x40>;
+        sound-name-prefix = "TDMOUT_C";
+        resets = <&km6_audio_clkc 14>;
+        clocks = <&km6_audio_clkc 37>, <&km6_audio_clkc 129>,
+                 <&km6_audio_clkc 122>, <&km6_audio_clkc 136>, <&km6_audio_clkc 136>;
+        clock-names = "pclk", "sclk", "sclk_sel", "lrclk", "lrclk_sel";
+    };
+    km6_tohdmi: audio-controller@330744 {
+        compatible = "km6,sc2-tohdmitx-experimental";
+        reg = <0 0x330744 0 4>;
+        #sound-dai-cells = <1>;
+        sound-name-prefix = "TOHDMITX";
+        resets = <&km6_audio_clkc 24>;
+    };
+};
+/ {
+    km6_tdmif: audio-controller-km6 {
+        compatible = "amlogic,axg-tdm-iface";
+        #sound-dai-cells = <0>;
+        sound-name-prefix = "TDM_C";
+        clocks = <&km6_audio_clkc 81>, <&km6_audio_clkc 88>, <&km6_audio_clkc 51>;
+        clock-names = "sclk", "lrclk", "mclk";
+    };
+    sound {
+        compatible = "km6,sc2-sound-card-experimental";
+        model = "KM6-SC2-HDMI-TEST";
+        audio-aux-devs = <&km6_tdmout>;
+        audio-routing = "TDMOUT_C IN 0", "FRDDR_A OUT 2",
+                        "TDM_C Playback", "TDMOUT_C OUT";
+        clocks = <0x03 29>;
+        assigned-clocks = <0x03 29>;
+        assigned-clock-rates = <294912000>;
+        dai-link-0 { sound-dai = <&km6_frddr>; };
+        dai-link-1 {
+            sound-dai = <&km6_tdmif>;
+            dai-format = "i2s";
+            dai-tdm-slot-tx-mask-0 = <1 1>;
+            mclk-fs = <256>;
+            codec { sound-dai = <&km6_tohdmi 2>; };
+        };
+        dai-link-2 {
+            sound-dai = <&km6_tohdmi 3>;
+            codec { sound-dai = <0x200>; };
+        };
+    };
+};

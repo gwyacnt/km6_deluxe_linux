@@ -21,6 +21,20 @@ The saved boot journal reports `Module 'maxio' is built in`, followed by Generic
 
 Build the unchanged driver C source as `km6_maxio.ko` and load `km6_maxio` through modules-load.d. Preserve the upstream built-in metadata. Order systemd-networkd after systemd-modules-load. An enabled diagnostic service waits up to 45 seconds for IPv4 and writes `/boot/km6-network-report.txt`, including driver binding, network state and kernel logs. Its optional helper is also present at `/boot/km6-network-report.sh`; no manual command is needed. Journal syncing is shortened to 30 seconds.
 
-The module built against the matching 6.18.49 headers. Offline libkmod testing reproduced the original built-in state and confirmed the new name is not built in. File-content checks, service/shell validation and the filesystem check passed. On 2026-09-09 the user reported an Ethernet IP address after booting revision 2. This is a user-reported result; startup logs and SSH have not yet been inspected.
+The module built against the matching 6.18.49 headers. Offline libkmod testing reproduced the original built-in state and confirmed the new name is not built in. File-content checks, service/shell validation and the filesystem check passed. On 2026-09-09 the user reported an Ethernet IP address after booting revision 2. Subsequent SSH and startup-log verification is recorded below.
 
 References: https://github.com/systemd/systemd/blob/main/src/shared/module-util.c and https://docs.kernel.org/kbuild/kbuild.html .
+
+## Revision 2 hardware verification — 2026-09-09
+
+Read-only SSH inspection confirmed the expected KM6 MAC and kernel, with `/` and `/boot` mounted from the USB disk. Internal eMMC was not mounted. The automatically saved boot report shows `km6_maxio` loading at 4.397 seconds, the MAE0621A driver attached at 5.927 seconds, and Ethernet link up at 9.024 seconds. DHCP and SSH worked without a manual driver command. The diagnostic service completed successfully and systemd reported no failed units.
+
+Router ping returned three responses with no loss; Debian mirror DNS resolution and clock synchronization worked. This is not a throughput or long-term stability test. The link negotiated 100 Mbps/full duplex. ethtool shows the KM6 advertising 1000baseT, while the link partner advertises only 10/100 Mbps. Check the connected router/switch port and connection before attributing this limit to the KM6 driver. Gigabit operation remains unverified. Raw reports and host-key pinning are retained only in the ignored archive.
+
+## Revision 3: automatic stereo HDMI audio
+
+Add the SC2 audio clock, FRDDR_A, TDMOUT_C, TDM C interface and HDMI routing nodes in a separate DTB. Preserve the original DTB and all its existing properties. The custom HDMI component uses the SC2 clock/data gates (bits 28/29) and TDM C MCLK settings. The adapted AXG sound-card driver recognizes the SC2 component as a codec-to-codec link. Both modules are built against the original 6.18.49 kernel headers; the kernel image is unchanged.
+
+Integration builds this audio source, installs both modules with regenerated dependency indexes and modules-load configuration, enables km6-audio-route.service, and selects the audio DTB in boot.config. The original boot.config is preserved alongside it for rollback. The automatic service configures the mixer without playing anything.
+
+On 2026-09-09 the physical KM6 loaded all three custom drivers automatically, obtained Ethernet/SSH, and completed silent PCM transfers. The user then confirmed that both stereo test tones sounded clear. Tested format: 48 kHz, S16_LE, two channels. No other audio format or long-duration playback is claimed. The assembled revision 3 image passed file-content, module-dependency and ext4 consistency checks; a fresh flash/boot of that complete image remains untested.

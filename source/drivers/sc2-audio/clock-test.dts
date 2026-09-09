@@ -1,0 +1,30 @@
+/dts-v1/;
+/plugin/;
+/* Experimental board-specific fragment. Numeric phandles are checked against
+ * the running baseline DTB before applying, not portable to arbitrary images.
+ * SC2 stock audio base and power ID; SM1 clock register layout confirmed against
+ * the vendor driver. No playback engine is enabled in this first-stage test.
+ */
+/ {
+    fragment@0 {
+        target-path = "/soc/bus@fe000000";
+        __overlay__ {
+            #address-cells = <2>;
+            #size-cells = <2>;
+            km6_audio_clkc: clock-controller@330000 {
+                compatible = "amlogic,sm1-audio-clkc";
+                reg = <0 0x330000 0 0xb4>;
+                #clock-cells = <1>;
+                #reset-cells = <1>;
+                power-domains = <0x10 10>;
+                clocks = <0x06 184>, <0x03 25>, <0x03 27>,
+                         <0x03 29>, <0x03 31>, <0x03 17>,
+                         <0x03 5>, <0x03 7>, <0x03 9>;
+                clock-names = "pclk", "mst_in0", "mst_in1", "mst_in2",
+                              "mst_in3", "mst_in4", "mst_in5", "mst_in6", "mst_in7";
+                resets = <0x09 32>;
+                status = "okay";
+            };
+        };
+    };
+};
