@@ -63,6 +63,11 @@ def main():
     require(parse_mpt((WORK / 'mpt.bin').read_bytes(), size) == expected, 'Candidate geometry mismatch')
     mounts = subprocess.check_output(['lsblk', '-nrpo', 'NAME,MOUNTPOINTS', DEVICE], text=True)
     require(all(len(line.split()) == 1 for line in mounts.splitlines()), 'An eMMC filesystem is mounted')
+    loops = json.loads(subprocess.check_output(['losetup', '--list', '--json', '-j', DEVICE,
+                                              '--output', 'NAME,RO,OFFSET,SIZELIMIT'], text=True))['loopdevices']
+    for loop in loops:
+        require(loop['ro'] and int(loop['offset']) == parts[-1]['offset'] and
+                int(loop['sizelimit']) == parts[-1]['size'], 'Unexpected existing loop mapping')
     print('Validated original eMMC metadata and signed candidates.', flush=True)
     print('Android data: 32 GiB; Linux boot: 256 MiB; Linux root: %.2f GiB.' % (expected[-1]['size'] / 2**30), flush=True)
     if not args.apply:
@@ -77,9 +82,7 @@ def main():
         path.write_bytes(data)
         path.chmod(0o600)
     os.sync()
-    loops = json.loads(subprocess.check_output(['losetup', '--json', '-j', DEVICE], text=True))['loopdevices']
     for loop in loops:
-        require(loop['ro'] and int(loop['offset']) == parts[-1]['offset'], 'Unexpected existing loop mapping')
         command('losetup', '-d', loop['name'])
     android = command('losetup', '--find', '--show', '--offset', parts[-1]['offset'], '--sizelimit', parts[-1]['size'], DEVICE)
     try:
