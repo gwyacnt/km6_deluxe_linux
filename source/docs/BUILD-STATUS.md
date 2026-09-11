@@ -1,3 +1,10 @@
+# Build and restore status
+
+For the current hardware state and next work, read [HANDOFF.md](HANDOFF.md).
+For a fresh-checkout binary restore, follow the [root README](../../README.md).
+The recipe below is the historical local driver/image build and needs ignored
+working dependencies; it is not the release restoration procedure.
+
 # Current local build recipe
 
 Run from the KM6 workspace, using preserved dependencies under `archive/`:

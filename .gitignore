@@ -2,6 +2,7 @@
 /*
 !/.gitignore
 !/README.md
+!/AGENTS.md
 !/source/
 /source/**/__pycache__/
 /source/**/*.pyc
@@ -10,3 +11,5 @@
 /source/**/*.img
 /source/**/*.img.xz
 /source/**/*.exe
+/source/**/.env
+/source/**/.env.*

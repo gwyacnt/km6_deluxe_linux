@@ -1,8 +1,10 @@
-# Internal dual boot — work in progress
+# Internal dual boot
 
-Target: a timed HDMI menu on every normal power-on, defaulting to Android,
-with Debian as the second choice. Both systems will use separate areas of
-internal eMMC. The final system must not require a USB stick or the reset button.
+Current behavior: both systems use separate areas of internal eMMC. Any
+external USB peripheral selects Debian automatically; without USB, the timed
+HDMI menu defaults to Android after 15 seconds. Normal operation requires
+neither a USB storage stick nor the reset button. Earlier prototype steps
+below are retained as implementation history.
 
 **Android TV and internal Debian desktop boot are confirmed. Debian was tested
 with the USB stick removed. The clean release installer remains a candidate
@@ -58,7 +60,7 @@ remounted the USB root filesystem read-only. A private backup was saved and an
 offline filesystem repair restored writable storage and the working desktop.
 The chooser was moved from
 init-bottom to local-premount so choosing Android no longer mounts Debian's
-filesystem. That earlier placement still needs a boot test.
+filesystem. The later internal-storage and USB-selector tests below validate this placement.
 
 The test needs a U-Boot ramdisk wrapper around the generated initramfs, a
 `rd_img` entry selecting that wrapper in the USB `boot.config`, and
@@ -215,3 +217,15 @@ external devices using fake sysfs directories. The pre-change release tag
 v0.2.0-rc2 remains unchanged. Its downloadable installer uses the old menu
 policy. New exports carry the installed initramfs into the internal installer
 bundle so a subsequent installation retains the current selection policy.
+
+## Final hardware check — September 11, 2026
+
+After removing and reconnecting power with the receiver attached, SSH verified
+`usb:1-1`, choice `10`, internal mapper root and active desktop/Tailscale.
+The owner then confirmed that removing all USB devices restored the timed
+Android-default menu and Android boot.
+
+One preceding warm restart had unstable Ethernet carrier and repeated DHCP
+lease loss. The cold boot restored networking; its cause remains unresolved.
+See [HANDOFF.md](../docs/HANDOFF.md) for the driver-name difference and next
+diagnostic steps. The published rc2 installer still predates USB selection.

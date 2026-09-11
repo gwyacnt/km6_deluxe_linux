@@ -7,8 +7,11 @@ Enable USB Linux boot on the tested Mecool KM6 Deluxe Rev2 (HDMI-marked chassis,
 Android TV and the Debian Xfce desktop both boot from separate internal eMMC
 areas on the tested KM6 Deluxe Rev2 (S905X4, 4 GB RAM, 64 GB A1511X eMMC).
 Debian boot with the USB stick removed was confirmed on HDMI and over SSH.
-The menu defaults to Android after 15 seconds; selecting Debian continues into
-its desktop. Ethernet, HDMI display/audio and Tailscale work in Debian.
+On current main, any external USB device (including the receiver) selects
+internal Debian automatically. Without USB, the menu defaults to Android after
+15 seconds. Both cold-boot paths were confirmed on September 11, 2026.
+Ethernet, HDMI display/audio and Tailscale work in Debian; Ethernet reliability
+after warm restarts remains an open issue. See [the developer handoff](docs/HANDOFF.md).
 
 **Checkpoint: `v0.2.0-rc2`.** See [the reproduction guide](docs/REPRODUCE.md)
 and its matching GitHub release for the prepared USB installer and checksums.
@@ -38,10 +41,10 @@ The stock reset/recovery FAT loader invokes `autoscr`, but its U-Boot command ta
 The enclosing workspace has three directories:
 
 - `archive/`: preserved original investigation, input images, dependencies, logs and experimental outputs; ignored by Git.
-- `releases/`: the three requested firmware/flasher binaries plus checksums, for manual release upload; ignored by Git.
+- `releases/`: staged firmware, flasher, Debian installer and checksums for release upload; ignored by Git.
 - `source/`: this maintained source tree and documentation, tracked by Git.
 
-The root `.gitignore` allows the root README, itself and `source/`. The root README contains the restoration instructions.
+The root `.gitignore` allows the root README, AGENTS.md, itself and `source/`. The root README contains the restoration instructions.
 
 ## Build source
 

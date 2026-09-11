@@ -5,8 +5,16 @@ All required images and the Amlogic flasher are attached to **that same release*
 The USB-writing tool and installation source are in this tag. No files from a
 different release or the author's private working folder are required.
 
-**Current main branch:** USB-presence automatic Debian selection is being tested;
-the release below remains the pre-change restore point.
+**Current main branch (confirmed September 11, 2026):** any connected external
+USB device, including the keyboard/mouse receiver, selects internal Debian
+automatically. With no USB device connected, the 15-second menu defaults to
+Android. Both paths were confirmed on the device. Ethernet failed after one
+warm restart and recovered after removing power; that issue remains open.
+The release below remains the pre-change restore point.
+
+**Continue development with Codex:** start with the [developer handoff](source/docs/HANDOFF.md).
+The [conversation archive](source/docs/conversation/README.md) preserves the
+project discussion. Root [AGENTS.md](AGENTS.md) provides instructions for Codex.
 
 This checkpoint provides a 15-second boot menu with **Android as default** and
 Debian as the second choice. Both operating systems use internal eMMC. It
@@ -30,7 +38,9 @@ fresh-media boot and a complete installation using that package remain untested.
    This downloads and verifies the images, flasher and installer bundle from
    this release. Files are saved under `downloads/v0.2.0-rc2/`.
 
-2. If the box is not already running our modified Android firmware, use the
+2. Start from the original Android partition layout. For a complete rebuild
+   of an already dual-booting box, reflash first; the installer is not an updater.
+   Use the
    included `V3_setup_V3.1.6.exe` Amlogic USB Burning Tool to flash
    `modified-km6.img`. The tested download connection uses the black USB 2.0
    port. Flashing erases the device. On this KM6, boot recovery without a stick
