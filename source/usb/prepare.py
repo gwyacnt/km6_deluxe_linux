@@ -1,6 +1,6 @@
 from pathlib import Path
 import struct,zlib,subprocess,hashlib,json,os
-r=Path(os.environ.get('KM6_WORKDIR', Path(__file__).resolve().parents[2]/'archive')).resolve()/'output/debian-usb';o=r/'boot-original';p=r/'boot-prepared';p.mkdir(exist_ok=True)
+r=Path(os.environ.get('KM6_WORKDIR', Path(__file__).resolve().parents[2]/'build')).resolve()/'output/debian-usb';o=r/'boot-original';p=r/'boot-prepared';p.mkdir(exist_ok=True)
 def pack(n,txt,template):
  b=template.read_bytes();h=list(struct.unpack('>7I4B32s',b[:64]));t=txt.encode();data=struct.pack('>II',len(t),0)+t
  h[1]=0;h[3]=len(data);h[6]=zlib.crc32(data);h[1]=zlib.crc32(struct.pack('>7I4B32s',*h));out=struct.pack('>7I4B32s',*h)+data

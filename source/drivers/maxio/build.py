@@ -6,7 +6,7 @@ import shutil
 import subprocess
 
 source = Path(__file__).resolve().parent
-workspace = Path(os.environ.get('KM6_WORKDIR', source.parents[2] / 'archive')).resolve()
+workspace = Path(os.environ.get('KM6_WORKDIR', source.parents[2] / 'build')).resolve()
 work = workspace / 'output/debian-ethernet/maxio'
 build = work / 'module-v2'
 build.mkdir(parents=True, exist_ok=True)

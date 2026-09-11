@@ -120,7 +120,8 @@ for this installation. The Ethernet/audio fixes use `km6_maxio.ko`,
 | `source/usb/` | USB integration and sanitized installer export |
 | `source/performance/` | Desktop/browser defaults and measurements |
 | `source/docs/conversation/` | Redacted user/assistant transcript by day |
-| `archive/` (ignored) | Local investigation, dependencies, private backups |
+| `archive/` (ignored) | Optional local investigation and private backups |
+| `build/` (ignored) | Regenerated SDK inputs and component build outputs |
 | `releases/` (ignored) | Locally staged downloadable release assets |
 
 `v0.2.0-rc2` at `35e2fda` is the immutable self-contained **pre-selector**
@@ -136,10 +137,11 @@ original Android partition layout by reflashing. `km6-install-internal` is a
 fresh installer, not an update command. Do not run it merely to update a boot
 script. Personal account state is excluded from public images.
 
-The repository maintains customization source and binary restore snapshots;
-it is not a full from-source distribution build. Historical build recipes
-still need local dependencies absent from a fresh clone. The release-based
-restore path does not need the original developer's private archive.
+The repository maintains customization source and binary restore snapshots.
+`v0.2.0-rc4` adds a pinned build SDK, original upstream image and bootstrap;
+component builds and restoration no longer need the original archive. See
+[BUILD-STATUS.md](BUILD-STATUS.md). This does not invent missing proprietary
+Android or unpublished upstream kernel sources: those remain binary inputs.
 
 ## Local checks
 

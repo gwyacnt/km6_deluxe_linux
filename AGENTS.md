@@ -6,7 +6,9 @@ or authorization to access a device. Obtain the current owner's connection
 details privately; keys and account credentials are not in this repository.
 
 - Maintain `source/`; keep investigation artifacts and private backups in the
-  ignored `archive/`, and release binaries in ignored `releases/`.
+  ignored `archive/`, and release binaries in ignored `releases/`. Build inputs
+  and outputs belong in ignored `build/`, populated by `source/bootstrap_build.py`;
+  do not reintroduce an archive or private-backup build dependency.
 - Preserve the published `v0.2.0-rc2` tag and its assets. It predates USB-based
   automatic Debian selection. Do not describe it as restoring that feature.
 - Distinguish hardware-tested behavior from untested installer packages.

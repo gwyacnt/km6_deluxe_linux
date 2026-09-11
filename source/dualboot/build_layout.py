@@ -48,11 +48,11 @@ def run(*args):
 
 def main():
     root = Path(__file__).resolve().parents[2]
-    archive = Path(os.environ.get('KM6_WORKDIR', root / 'archive')).resolve()
-    stock = archive / 'output/extracted/stock'
-    work = archive / 'output/dualboot'
+    workspace = Path(os.environ.get('KM6_WORKDIR', root / 'build')).resolve()
+    stock = workspace / 'output/extracted/stock'
+    work = workspace / 'output/dualboot'
     out = work / 'layout-candidate'
-    out.mkdir(exist_ok=True)
+    out.mkdir(parents=True, exist_ok=True)
     tool = work / 'avbtool.py'
     key = work / 'aosp-public-testkey-rsa2048.pem'
     for path, digest in [(tool, 'e5a664a38db623da00f080219bc0ee60a640a9dc4a872803616fae4938ac749b'),
@@ -72,7 +72,7 @@ def main():
     original_dt = (stock / 'PARTITION._aml_dtb').read_bytes()
     multi = bytearray(zlib.decompress(original_dt, 31))
     assert struct.unpack_from('<3I', multi) == (0x5f4c4d41, 2, 3)
-    fdtput = archive / 'output/tools/dtc-local/usr/bin/fdtput'
+    fdtput = workspace / 'output/tools/dtc-local/usr/bin/fdtput'
     checks = []
     for i in range(3):
         offset, allocated = struct.unpack_from('<II', multi, 12 + i * 56 + 48)
@@ -124,9 +124,8 @@ def main():
     d = dt_desc[0]
     assert hashlib.sha256(d.salt + dt.read_bytes()[:d.image_size]).digest() == d.digest
 
-    reserved = archive / 'private/dualboot-backup/reserved.bin'
-    with reserved.open('rb') as f:
-        table = f.read(1304)
+    table = (Path(__file__).parent / 'stock-mpt.bin').read_bytes()
+    assert hashlib.sha256(table).hexdigest() == 'caa42f20264cd105a94f4866fd036643f9f787bdea6aa42c7a23aa3226e0c68d'
     parts = propose(parse_mpt(table, DEVICE_SIZE), DEVICE_SIZE)
     entries = b''.join(struct.pack('<16sQQII', p['name'].encode(), p['size'], p['offset'], p['flags'], 0) for p in parts)
     checksum = sum(struct.unpack_from('<10I', entries)) * len(parts) & 0xffffffff

@@ -4,7 +4,7 @@ from pathlib import Path
 import hashlib, os, shutil, subprocess
 src = Path(__file__).resolve().parent
 root = src.parents[2]
-workspace = Path(os.environ.get('KM6_WORKDIR', root / 'archive')).resolve()
+workspace = Path(os.environ.get('KM6_WORKDIR', root / 'build')).resolve()
 w = workspace / 'output/audio-investigation/playback-test'
 w.mkdir(parents=True, exist_ok=True)
 base = w.parent / 'baseline.dtb'

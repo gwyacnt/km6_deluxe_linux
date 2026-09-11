@@ -6,10 +6,11 @@ import struct
 import subprocess
 
 src = Path(__file__).resolve().parent
-archive = Path(os.environ.get('KM6_WORKDIR', src.parents[1] / 'archive')).resolve()
-work = archive / 'output/dualboot'
-toolchain = archive / 'output/debian-ethernet/maxio/toolchain/usr'
+workspace = Path(os.environ.get('KM6_WORKDIR', src.parents[1] / 'build')).resolve()
+work = workspace / 'output/dualboot'
+toolchain = workspace / 'output/debian-ethernet/maxio/toolchain/usr'
 deps = work / 'deps'
+work.mkdir(parents=True, exist_ok=True)
 env = {**os.environ, 'PATH': str(toolchain / 'bin') + ':' + os.environ['PATH'],
        'LD_LIBRARY_PATH': str(toolchain / 'lib/x86_64-linux-gnu')}
 for name, source in [('km6-menu', 'menu.c'), ('km6-mpt-map', 'mpt-map.c')]:

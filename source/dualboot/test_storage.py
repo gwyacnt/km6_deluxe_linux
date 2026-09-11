@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check layout invariants against a local, private table backup."""
+"""Check layout invariants against the public stock MPT fixture."""
 import sys
 from pathlib import Path
 from plan_storage import DEVICE_SIZE, MIB, parse_mpt, propose, validate

@@ -13,7 +13,7 @@ internal Debian automatically. Without USB, the menu defaults to Android after
 Ethernet, HDMI display/audio and Tailscale work in Debian; Ethernet reliability
 after warm restarts remains an open issue. See [the developer handoff](docs/HANDOFF.md).
 
-**Checkpoint: `v0.2.0-rc3`.** See [the reproduction guide](docs/REPRODUCE.md)
+**Checkpoint: `v0.2.0-rc4`.** See [the reproduction guide](docs/REPRODUCE.md)
 and its matching GitHub release for the prepared USB installer and checksums.
 The device setup is hardware-tested. The newly packaged clean installer still
 needs a fresh USB boot and complete installation test; it is a release candidate.
@@ -40,7 +40,7 @@ The stock reset/recovery FAT loader invokes `autoscr`, but its U-Boot command ta
 
 The enclosing workspace has three directories:
 
-- `archive/`: preserved original investigation, input images, dependencies, logs and experimental outputs; ignored by Git.
+- `archive/`: private recovery backups and historical investigation material; ignored by Git.
 - `releases/`: staged firmware, flasher, Debian installer and checksums for release upload; ignored by Git.
 - `source/`: this maintained source tree and documentation, tracked by Git.
 
@@ -50,7 +50,10 @@ The root `.gitignore` allows the root README, AGENTS.md, itself and `source/`. T
 
 `firmware/` contains the firmware patcher. `usb/` contains boot sources, original upstream boot files, rootfs configuration and image customization scripts. `drivers/maxio/` contains driver source and its original community version. `drivers/sc2-audio/` contains the HDMI audio drivers, device-tree additions and automatic mixer configuration. `diagnostics/` retains the optional manual test; the historical installer is not required or recommended for normal startup.
 
-The Python build scripts default to the preserved sibling `archive/` working directory. Override `KM6_WORKDIR` to use another workspace with the same input layout. They write generated files into that workspace, not into this source tree. This organization preserves the existing recipes; it does not yet provide a standalone fresh-checkout build. See `docs/BUILD-STATUS.md`.
+Run `python3 source/bootstrap_build.py` from the repository root to download
+and verify public build inputs from the same release. Then run
+`python3 source/build.py`. These use ignored `build/`, not `archive/`. See
+[build instructions](docs/BUILD-STATUS.md) for host requirements and outputs.
 
 Upstream: https://github.com/devmfc/debian-on-amlogic . Our base is `Devmfc_Debian-Trixie_6.18.49-meson64_Minimal-26.09.02.img.xz`. We preserve our customization source; some upstream sources/build scripts are unavailable, so this is not a complete from-source OS build.
 

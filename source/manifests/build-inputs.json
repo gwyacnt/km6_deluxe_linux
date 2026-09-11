@@ -1,0 +1,22 @@
+{
+  "tag": "v0.2.0-rc4",
+  "stock_image": "KM6-QTT2.200903.001-V4.20201026.img",
+  "upstream_image": "Devmfc_Debian-Trixie_6.18.49-meson64_Minimal-26.09.02.img.xz",
+  "assets": [
+    {
+      "name": "km6-build-sdk.tar.xz",
+      "size": 64028764,
+      "sha256": "cb5bd3c5e0c8570a9a6fb65917aa2d7ca25e24797ba6121ba4343de606a63e3b"
+    },
+    {
+      "name": "Devmfc_Debian-Trixie_6.18.49-meson64_Minimal-26.09.02.img.xz",
+      "size": 115562384,
+      "sha256": "399e3e4ac2cf5ff7416a1ef6940beb364d7b408a69626e25a59fe9c5d2f8219d"
+    },
+    {
+      "name": "KM6-QTT2.200903.001-V4.20201026.img",
+      "size": 1602981384,
+      "sha256": "e9c5b585374b0d2cd32c471eb171ed7fce46d5f2f689248d79ba281bc8cc1a44"
+    }
+  ]
+}

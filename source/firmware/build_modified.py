@@ -13,10 +13,11 @@ import stat
 import struct
 import zlib
 
-ROOT = Path(os.environ.get('KM6_WORKDIR', Path(__file__).resolve().parents[2] / 'archive')).resolve()
+ROOT = Path(os.environ.get('KM6_WORKDIR', Path(__file__).resolve().parents[2] / 'build')).resolve()
 STOCK = ROOT / 'Stock/KM6-QTT2.200903.001-V4.20201026.img'
 EXPECTED = 'e9c5b585374b0d2cd32c471eb171ed7fce46d5f2f689248d79ba281bc8cc1a44'
 OUT = ROOT / 'output'
+(OUT / 'analysis').mkdir(parents=True, exist_ok=True)
 
 def safe_regular(path, existing=True):
     assert path.resolve().is_relative_to(ROOT)
@@ -135,7 +136,7 @@ def build():
         assert stored==crc^0xffffffff
     assert digest_file(STOCK)==EXPECTED
     os.replace(temp,target)
-    result=dict(status='FIRST CANDIDATE: offline integrity verified; stock also requires post-flash factory reset; candidate external boot remains unconfirmed; see revision2/FIELD-TEST-RESULTS.md',
+    result=dict(status='Rebuilt stock USB-loader patch; offline integrity verified; compare with the released modified firmware before flashing',
                 source=str(STOCK.relative_to(ROOT)),source_sha256=EXPECTED,
                 output=str(target.relative_to(ROOT)),output_sha256=digest_file(target),
                 size=target.stat().st_size,changed_bytes=count,changed_ranges=ranges,

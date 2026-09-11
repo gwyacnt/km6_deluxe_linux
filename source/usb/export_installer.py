@@ -80,7 +80,7 @@ def main():
     (stage / 'var/lib/dbus').mkdir(exist_ok=True)
     (stage / 'var/lib/dbus/machine-id').symlink_to('/etc/machine-id')
     bundle = stage / 'usr/local/share/km6-installer'
-    shutil.copytree(a.bundle, bundle)
+    shutil.copytree(a.bundle, bundle, dirs_exist_ok=True)
     # Preserve the running boot policy even when the metadata bundle originated
     # from an earlier checkpoint. copy_debian.py uses this payload internally.
     ramdisk = Path('/boot/uInitrd-km6-menu.img').read_bytes()
@@ -97,7 +97,10 @@ def main():
     shutil.copy2(bundle / 'install_from_release.py', stage / 'usr/local/sbin/km6-install-internal')
     (stage / 'usr/local/sbin/km6-install-internal').chmod(0o755)
     shutil.copy2(bundle / 'km6-first-boot.service', stage / 'etc/systemd/system/km6-first-boot.service')
-    (stage / 'etc/systemd/system/multi-user.target.wants/km6-first-boot.service').symlink_to('../km6-first-boot.service')
+    first_boot_link = stage / 'etc/systemd/system/multi-user.target.wants/km6-first-boot.service'
+    if first_boot_link.exists() or first_boot_link.is_symlink():
+        first_boot_link.unlink()
+    first_boot_link.symlink_to('../km6-first-boot.service')
     boot = a.output / 'boot'
     boot.mkdir()
     run('rsync', '-rt', '--exclude=DEB*.BIN', '--exclude=*.before*', '--exclude=*.bak',

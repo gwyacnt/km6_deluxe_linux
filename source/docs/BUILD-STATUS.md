@@ -1,25 +1,90 @@
-# Build and restore status
+# Build maintained components from a fresh clone
 
-For the current hardware state and next work, read [HANDOFF.md](HANDOFF.md).
-For a fresh-checkout binary restore, follow the [root README](../../README.md).
-The recipe below is the historical local driver/image build and needs ignored
-working dependencies; it is not the release restoration procedure.
+The build workflow does **not** use `archive/`, a device backup, the original
+PC, or SSH access to the KM6. Required binary inputs are pinned by SHA-256 in
+`source/manifests/build-inputs.json` and attached to the same `v0.2.0-rc4`
+release as the restore installer.
 
-# Current local build recipe
+## Host and commands
 
-Run from the KM6 workspace, using preserved dependencies under `archive/`:
+Tested host: Debian 13 on x86_64, Python 3.13. Use Python 3.12 or newer for the
+safe tar extraction filter. Allow 10 GB of working space, plus download cache.
+The SDK supplies the cross-compiler, exact kernel headers, cross-libc, dtc,
+mtools and AVB tools. Standard host packages are still prerequisites:
 
 ```sh
-python3 source/drivers/maxio/build.py
-python3 source/usb/integrate.py
+sudo apt-get install python3 build-essential e2fsprogs kmod openssl \
+  libisl23 libmpc3 libmpfr6 libgmp10 libzstd1 zlib1g libyaml-0-2 libfdt1
+
+git clone --branch v0.2.0-rc4 https://github.com/gwyacnt/km6_deluxe_linux.git
+cd km6_deluxe_linux
+python3 source/bootstrap_build.py
+python3 source/build.py
 ```
 
-The driver build copies maintained source into the ignored `archive/output/debian-ethernet/maxio/module-v2/` build directory and uses the matching prepared kernel headers and cross-toolchain. Integration extracts the original complete kernel module tree from `archive/output/debian-usb/rootfs.ext4`, builds the SC2 audio modules and device tree from maintained source, adds `km6_maxio.ko`, `km6_sc2_tohdmitx.ko` and `km6_sc2_card.ko`, runs depmod and creates `archive/output/debian-usb/autoload-v3/debian-km6-network-audio-v3.img`. It preserves earlier images. `KM6_WORKDIR` overrides the archive location.
+The build commands run unprivileged and operate on regular files. They do not
+flash a USB stick, connect to the KM6, or modify its eMMC. Only package
+installation above needs sudo. Other host distributions/architectures have not
+been validated with this prepared x86_64 SDK.
 
-Integration requires the verified boot-compatible baseline `archive/output/debian-usb/debian.img`, original extracted root filesystem and local mcopy. It also requires the original generic Gigabit DTB at `archive/output/audio-investigation/baseline.dtb` (hash checked by the audio builder). It adds the files in `usb/rootfs/` and `drivers/sc2-audio/rootfs/`, enables the automatic report and audio-routing services, selects the audio DTB in FAT boot.config while retaining a rollback copy, copies a report helper into FAT, verifies all installed file contents and checks filesystem consistency. It operates on regular files only and does not write a USB device. The retained firmware builder and USB baseline preparation script remain available separately.
+Bootstrap downloads three pinned inputs: the stock KM6 ROM, the original
+Devmfc image, and `km6-build-sdk.tar.xz`. It extracts only the public Android
+components needed by the layout builder, reconstructs the Linux baseline and
+extracts its root filesystem. All generated files go under ignored `build/`.
+An existing workspace is refused to avoid overwriting previous work. Choose
+another directory with `--workspace /path/to/new-build` on **both** commands.
+`--directory /path/to/cache` optionally selects a verified download cache.
 
-The source now drives module building and image integration, but an independent fresh-checkout build still needs dependency downloads, exact header host-tool preparation and baseline extraction automated. The cross-compiler differs from the upstream kernel compiler (GCC 14.2 versus 13.3); matching kernel headers and vermagic were verified.
+The scripts in `source/drivers/`, `source/firmware/`, `source/dualboot/` and
+`source/usb/` also default to `build/`; `KM6_WORKDIR` can override that location.
+No specific developer username, absolute workspace path or private recovery
+backup is required.
 
-Historical reports in archive and the original project plan may contain superseded status statements and old absolute paths. See DEBIAN-CHANGES.md and the maintained README for current status.
+## Outputs and scope
 
-Ethernet automatic startup and HDMI stereo listening were verified on the physical KM6 with these module/DTB versions. The newly assembled revision 3 image passes offline checks but has not itself been flashed and cold-booted. No diagnostic overlay/module or test tone is installed in normal images.
+| Target (`source/build.py --target NAME`) | Output under `build/output/` |
+| --- | --- |
+| `drivers` | Maxio Ethernet module, both SC2 HDMI audio modules and audio DTB |
+| `tools` | Static AArch64 boot chooser and read-only MPT mapper |
+| `layout` | Signed Android partition metadata, MPT/DTB slots and public installer layout manifest |
+| `firmware` | `modified-km6.img`, verified against the stock container |
+| `legacy-usb` | Original minimal Debian image with our Ethernet/audio integration; filesystem checked |
+
+With no `--target`, all targets run. Targets can be repeated. The legacy USB
+integration target rebuilds the earlier minimal driver-test image; **use the
+release installer for the current Xfce desktop and USB-selection setup**.
+The complete desktop is distributed as a sanitized binary snapshot, not
+recreated by the legacy integration script.
+
+To maintain that desktop snapshot, restore the release, customize Debian and
+run the tagged `source/usb/export_installer.py` on the internal KM6 installation
+with the release's extracted installer bundle. See [REPRODUCE.md](REPRODUCE.md).
+The exporter now also handles installations that already contain a previous
+public installer bundle and first-boot service link.
+
+The original upstream Linux image, Android ROM and compiler/headers are binary
+build inputs. We maintain the KM6 customization source, not unpublished
+Android/kernel sources or a complete compiler/distribution build system.
+Preserving these inputs in the release makes our component builds independent
+of the original workspace without claiming a fully from-source OS build.
+
+## Validation
+
+A separate checkout was populated only with source and the pinned release
+inputs. Bootstrap and **all five build targets passed** there on September 11,
+2026. The rebuilt modified Android image matched the released SHA-256 exactly.
+Audio DTB and both HDMI audio modules also matched the current installation.
+The Maxio module passed name/vermagic checks but its binary hash differs from
+the original build; byte-for-byte reproducibility of every compiler output is
+not claimed. No rebuilt module was installed on the working KM6 during this
+check. The legacy integrated image passed filesystem and content checks.
+
+See `build-validation.json` in the release for the recorded results. These
+are build/offline checks, not a fresh flash or end-to-end restore test.
+The warm-restart Ethernet issue remains open as documented in HANDOFF.md.
+
+`source/dualboot/stock-mpt.bin` contains only 1304 bytes of stock partition
+names, offsets, sizes and checksum. It is not a reserved-partition dump or a
+personal backup. `stock-layout.json` contains public layout/hash constraints.
+Actual device-specific DTB slot hashes and Android footer data are captured
+at installation time by `install_from_release.py`, not supplied by a developer.

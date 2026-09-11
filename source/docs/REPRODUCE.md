@@ -1,4 +1,4 @@
-# Reproduce checkpoint v0.2.0-rc3
+# Reproduce checkpoint v0.2.0-rc4
 
 This checkpoint preserves the current internal Android/Debian desktop setup:
 **any external USB device, including the receiver, automatically selects
@@ -7,13 +7,13 @@ The source tag alone is not an OS image: use its matching release assets.
 
 ## Downloads
 
-From [v0.2.0-rc3](https://github.com/gwyacnt/km6_deluxe_linux/releases/tag/v0.2.0-rc3):
+From [v0.2.0-rc4](https://github.com/gwyacnt/km6_deluxe_linux/releases/tag/v0.2.0-rc4):
 
 - `km6-debian-desktop-installer.img.xz`: clean persistent Debian USB image.
 - `km6-installer-bundle.tar.xz`: partition metadata, initramfs and installer sources used in that image.
 - `packages.tsv`: installed Debian package versions.
 - `SHA256SUMS`: hashes of these assets.
-- `checkpoint-v0.2.0-rc3.json`: hashes of critical files from the working device.
+- `checkpoint-v0.2.0-rc4.json`: hashes of critical files from the working device.
 - `validation.json`: image checks and explicit hardware-test coverage.
 
 The same release also includes `modified-km6.img`,
@@ -93,7 +93,7 @@ that restart issue. The new installer still needs end-to-end hardware testing.
 Check out the exact source with:
 
 ```sh
-git clone --branch v0.2.0-rc3 https://github.com/gwyacnt/km6_deluxe_linux.git
+git clone --branch v0.2.0-rc4 https://github.com/gwyacnt/km6_deluxe_linux.git
 ```
 
 `usb/export_installer.py` makes a sanitized USB image from a working internal

@@ -1,0 +1,34 @@
+{
+  "original_regions": {
+    "mpt": {
+      "offset": 37748736,
+      "size": 1304,
+      "sha256": "caa42f20264cd105a94f4866fd036643f9f787bdea6aa42c7a23aa3226e0c68d"
+    },
+    "dtb_a": {
+      "offset": 41943040,
+      "size": 262144,
+      "sha256": "df197a90cd24134629da8a1aa192bb00f17e82b6b9900a5a5e6cd923f0fef05d"
+    },
+    "dtb_b": {
+      "offset": 42205184,
+      "size": 262144,
+      "sha256": "df197a90cd24134629da8a1aa192bb00f17e82b6b9900a5a5e6cd923f0fef05d"
+    },
+    "vbmeta": {
+      "offset": 1224736768,
+      "size": 4096,
+      "sha256": "50959df563aab7ba7b917dd9d72d697556e6b9db8d0d7052d70a98ba2a6c11cf"
+    },
+    "data_tail": {
+      "offset": 62545444864,
+      "size": 16384
+    }
+  },
+  "candidate_files": {
+    "mpt.bin": "76b43ece847846e94d897ac0f4321b5b08604d150c412329c714b2f6f9e2ed3c",
+    "dtb-slot.bin": "40bac875298162370712b46ccb2cbeb56f76ee5c1deb229620f748dbbdf085b7",
+    "PARTITION.vbmeta": "10d93096f6cd96c930bdf6b7f5d188d5dc5ad55e8f25267765c11d38f07438c2"
+  },
+  "original_dtb_payload_sha256": "0391c32481fb8105dad6287036ff9844dc525f4396c6e4418a7f665976c6e363"
+}

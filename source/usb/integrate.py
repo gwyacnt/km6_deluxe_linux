@@ -8,7 +8,7 @@ import shutil
 import subprocess
 
 source = Path(__file__).resolve().parent
-workspace = Path(os.environ.get('KM6_WORKDIR', source.parents[1] / 'archive')).resolve()
+workspace = Path(os.environ.get('KM6_WORKDIR', source.parents[1] / 'build')).resolve()
 usb = workspace / 'output/debian-usb'
 work = usb / 'autoload-v3'
 work.mkdir(parents=True, exist_ok=True)
@@ -21,7 +21,8 @@ def digest(path):
         return hashlib.file_digest(stream, 'sha256').hexdigest()
 
 assert base.is_file() and not base.is_symlink()
-assert digest(base) == 'd859c942bbf60275584e79929b7ab09a456af470256f3e7918ef94b845698af8'
+inputs = json.loads((workspace / 'prepared-inputs.json').read_text())
+assert digest(base) == inputs['prepared_usb_sha256']
 assert subprocess.check_output(['/usr/sbin/modinfo', '-F', 'name', str(module)], text=True).strip() == 'km6_maxio'
 assert subprocess.check_output(['/usr/sbin/modinfo', '-F', 'vermagic', str(module)], text=True).startswith(kernel + ' ')
 

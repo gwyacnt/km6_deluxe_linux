@@ -1,6 +1,6 @@
 # KM6 Deluxe: Android TV + internal Debian
 
-**Restore checkpoint: [v0.2.0-rc3](https://github.com/gwyacnt/km6_deluxe_linux/releases/tag/v0.2.0-rc3).**
+**Restore checkpoint: [v0.2.0-rc4](https://github.com/gwyacnt/km6_deluxe_linux/releases/tag/v0.2.0-rc4).**
 All required images and the Amlogic flasher are attached to **that same release**.
 The USB-writing tool and installation source are in this tag. No files from a
 different release or the author's private working folder are required.
@@ -30,13 +30,13 @@ fresh-media boot and a complete installation using that package remain untested.
 1. Get the tagged source:
 
    ```sh
-   git clone --branch v0.2.0-rc3 https://github.com/gwyacnt/km6_deluxe_linux.git
+   git clone --branch v0.2.0-rc4 https://github.com/gwyacnt/km6_deluxe_linux.git
    cd km6_deluxe_linux
    python3 source/reproduce.py --download-all
    ```
 
    This downloads and verifies the images, flasher and installer bundle from
-   this release. Files are saved under `downloads/v0.2.0-rc3/`.
+   this release. Files are saved under `downloads/v0.2.0-rc4/`.
 
 2. Start from the original Android partition layout. For a complete rebuild
    of an already dual-booting box, reflash first; the installer is not an updater.
@@ -90,8 +90,11 @@ image download, compiler or driver-building tools are needed for this restore.
 | `packages.tsv` | Preserved installed package versions |
 | `SHA256SUMS` | Release asset checksums |
 | `INSTALL.md` | Detailed restoration instructions |
-| `checkpoint-v0.2.0-rc3.json` | Hashes of the working device’s critical files |
+| `checkpoint-v0.2.0-rc4.json` | Hashes of the working device’s critical files |
 | `validation.json` | Packaged-image checks and hardware-test limitations |
+| `km6-build-sdk.tar.xz` | Pinned compiler, kernel headers and specialized build tools |
+| `Devmfc_Debian-Trixie_6.18.49-meson64_Minimal-26.09.02.img.xz` | Original upstream build baseline |
+| `BUILD.md` / `build-validation.json` | Fresh-checkout build instructions and results |
 
 The public image preserves the desktop, applications, drivers, audio/network
 fixes and boot configuration. It removes personal logins, password hashes,
@@ -103,3 +106,18 @@ See [the detailed tagged reproduction guide](source/docs/REPRODUCE.md),
 [performance settings](source/performance/README.md). This is a binary OS
 snapshot with maintained customization source, not a complete from-source
 distribution build or a single combined Amlogic burning ROM.
+
+## Rebuild the maintained components
+
+The same release includes the pinned compiler/header SDK and original upstream
+Debian image. No files from `archive/` or the original developer's PC are needed.
+On the supported build host, run:
+
+```sh
+python3 source/bootstrap_build.py
+python3 source/build.py
+```
+
+See [build requirements, outputs and validation](source/docs/BUILD-STATUS.md).
+`build/` and `downloads/` are disposable generated directories. `archive/` is
+optional private/historical material, not a build or restore dependency.

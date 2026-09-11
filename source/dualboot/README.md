@@ -131,17 +131,18 @@ slot payload, and regenerates Android AVB metadata with all non-DT descriptors
 preserved. The stock vbmeta signature was verified and its embedded public key
 matched AOSP's published RSA-2048 test key exactly. Candidate signatures and
 the new DT hash were verified offline; Android boot with these new metadata
-files is not yet tested.
+files was confirmed on the original device; rebuilt outputs still require
+validation before deployment.
 
-The builder currently uses preserved stock inputs, the private table backup,
-local dtc tools, and these upstream files downloaded under
-`archive/output/dualboot/`:
+The builder uses stock components extracted by `source/bootstrap_build.py`,
+the public `stock-mpt.bin` geometry table, and the release SDK’s dtc tools.
+The SDK also preserves these exact upstream files under `build/output/dualboot/`:
 
 - `avbtool.py`: [AOSP avbtool](https://android.googlesource.com/platform/external/avb/+/refs/heads/main/avbtool.py), SHA-256 `e5a664a38db623da00f080219bc0ee60a640a9dc4a872803616fae4938ac749b`.
 - `aosp-public-testkey-rsa2048.pem`: [AOSP published test key](https://android.googlesource.com/platform/external/avb/+/refs/heads/main/test/data/testkey_rsa2048.pem), SHA-256 `f1d5765a2bdfb92fb08aee021107c7ac1a7a3f590dafd853771c85375ef0fbd7`.
 
-These URLs follow upstream's main branch; the builder enforces the recorded
-file hashes. The key is a publicly distributed test fixture, not a private
+These provenance URLs follow upstream's main branch. Builds use the pinned
+copies in this release’s SDK and enforce the recorded hashes. The key is a publicly distributed test fixture, not a private
 device or account credential.
 
 ## Linux view of internal partitions

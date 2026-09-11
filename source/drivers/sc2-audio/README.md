@@ -14,7 +14,7 @@ Build the playback candidate from the repository's enclosing workspace:
 python3 source/drivers/sc2-audio/build.py
 ```
 
-Dependencies are the preserved compiler/headers from the Ethernet work, local dtc tools and the exact original generic Gigabit DTB at `archive/output/audio-investigation/baseline.dtb`. The script checks its SHA256 and clock/reset/power references. Artifacts go into `archive/output/audio-investigation/playback-test/`. The module compiled against 6.18.49-meson64; all 677 properties of the original DTB were compared and retained. New audio nodes and an HDMI phandle are additions.
+Dependencies are provided by `source/bootstrap_build.py`: the pinned compiler/headers, dtc tools and exact original generic Gigabit DTB under `build/output/audio-investigation/baseline.dtb`. The script checks its SHA256 and clock/reset/power references. Artifacts go into `build/output/audio-investigation/playback-test/`. The module compiled against 6.18.49-meson64; all 677 properties of the original DTB were compared and retained. New audio nodes and an HDMI phandle are additions.
 
 ## Current device state
 

@@ -1,12 +1,22 @@
 {
-  "tag": "v0.2.0-rc3",
+  "tag": "v0.2.0-rc4",
   "usb_image": "km6-debian-desktop-installer.img.xz",
   "raw_image_size": 6711934976,
   "assets": [
     {
+      "name": "BUILD.md",
+      "size": 4892,
+      "sha256": "0b581e2d6db11e40971e1ebd698f408d4bb9ccd4a1ee2f5159467bd854ff72d6"
+    },
+    {
+      "name": "Devmfc_Debian-Trixie_6.18.49-meson64_Minimal-26.09.02.img.xz",
+      "size": 115562384,
+      "sha256": "399e3e4ac2cf5ff7416a1ef6940beb364d7b408a69626e25a59fe9c5d2f8219d"
+    },
+    {
       "name": "INSTALL.md",
       "size": 6493,
-      "sha256": "1adea539a794eb8467ea0f07bd3530e1883cad8bef7a180198fce07324f0e85c"
+      "sha256": "9249386392122e81f8c42797f6f82804e04501c896a6c286537484763d14b0c4"
     },
     {
       "name": "KM6-QTT2.200903.001-V4.20201026.img",
@@ -19,9 +29,19 @@
       "sha256": "e32dcbf6a485f0985a1119831289954b65b88496c684a48a8e69deab1c389f8b"
     },
     {
-      "name": "checkpoint-v0.2.0-rc3.json",
+      "name": "build-validation.json",
+      "size": 1722,
+      "sha256": "f74f5932d2aca8653add9c618bacdf9c6b21cdb5ffd1ca4b05ae351b218cc5bd"
+    },
+    {
+      "name": "checkpoint-v0.2.0-rc4.json",
       "size": 1443,
       "sha256": "6f2552a18e7c3a675df5f05d84e83285e02168ae31b5d28b6199b1047368c5d5"
+    },
+    {
+      "name": "km6-build-sdk.tar.xz",
+      "size": 64028764,
+      "sha256": "cb5bd3c5e0c8570a9a6fb65917aa2d7ca25e24797ba6121ba4343de606a63e3b"
     },
     {
       "name": "km6-debian-desktop-installer.img.xz",
@@ -45,8 +65,8 @@
     },
     {
       "name": "validation.json",
-      "size": 2331,
-      "sha256": "96fa965cb7dbcce7cb944fc67547901c66cd97c39e41ea155085607a5e3f491d"
+      "size": 2446,
+      "sha256": "b7b18340e9245fa7fab812f0e6a8ab879381e715e45132f991ae0dde4d3c37f2"
     }
   ]
 }
