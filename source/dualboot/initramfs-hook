@@ -6,6 +6,8 @@ case "${1:-}" in prereqs) prereqs; exit 0 ;; esac
 set -eu
 . /usr/share/initramfs-tools/hook-functions
 copy_exec /usr/local/lib/km6-dualboot/km6-menu /bin/km6-menu
+cp /usr/local/lib/km6-dualboot/usb-present "${DESTDIR}/bin/km6-usb-present"
+chmod 755 "${DESTDIR}/bin/km6-usb-present"
 copy_exec /usr/bin/openvt /usr/lib/km6-dualboot/openvt
 copy_exec /usr/bin/setfont /bin/setfont
 copy_exec /usr/bin/fw_printenv /usr/bin/fw_printenv

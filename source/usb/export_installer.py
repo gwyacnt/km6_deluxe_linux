@@ -13,6 +13,7 @@ from pathlib import Path
 import shutil
 import struct
 import subprocess
+import zlib
 
 
 def run(*args):
@@ -80,6 +81,17 @@ def main():
     (stage / 'var/lib/dbus/machine-id').symlink_to('/etc/machine-id')
     bundle = stage / 'usr/local/share/km6-installer'
     shutil.copytree(a.bundle, bundle)
+    # Preserve the running boot policy even when the metadata bundle originated
+    # from an earlier checkpoint. copy_debian.py uses this payload internally.
+    ramdisk = Path('/boot/uInitrd-km6-menu.img').read_bytes()
+    if (len(ramdisk) < 64 or struct.unpack_from('>I', ramdisk)[0] != 0x27051956 or
+            struct.unpack_from('>I', ramdisk, 12)[0] != len(ramdisk) - 64 or
+            struct.unpack_from('>I', ramdisk, 24)[0] != zlib.crc32(ramdisk[64:])):
+        raise RuntimeError('Current boot ramdisk failed size/CRC validation')
+    (bundle / 'internal.initrd').write_bytes(ramdisk[64:])
+    for installed, name in [('/etc/initramfs-tools/hooks/km6-menu', 'initramfs-hook'),
+                            ('/etc/initramfs-tools/scripts/local-premount/km6-menu', 'initramfs-menu')]:
+        shutil.copy2(installed, bundle / name)
     shutil.copy2(bundle / 'first_boot.py', stage / 'usr/local/sbin/km6-first-boot')
     (stage / 'usr/local/sbin/km6-first-boot').chmod(0o755)
     shutil.copy2(bundle / 'install_from_release.py', stage / 'usr/local/sbin/km6-install-internal')

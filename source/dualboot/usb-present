@@ -1,0 +1,12 @@
+#!/bin/sh
+# Report an enumerated external USB device, including receivers and hubs.
+# An alternate sysfs directory is accepted for offline tests only.
+for device in "${1:-/sys/bus/usb/devices}"/[0-9]*-[0-9]*; do
+    name=${device##*/}
+    case "$name" in *:*) continue ;; esac
+    # Host root hubs are named usbN; interface entries have no idVendor.
+    [ -r "$device/idVendor" ] || continue
+    printf '%s\n' "$name"
+    exit 0
+done
+exit 1

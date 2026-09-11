@@ -5,6 +5,9 @@ All required images and the Amlogic flasher are attached to **that same release*
 The USB-writing tool and installation source are in this tag. No files from a
 different release or the author's private working folder are required.
 
+**Current main branch:** USB-presence automatic Debian selection is being tested;
+the release below remains the pre-change restore point.
+
 This checkpoint provides a 15-second boot menu with **Android as default** and
 Debian as the second choice. Both operating systems use internal eMMC. It
 does **not** contain the later proposed USB-presence automatic-selection rule.

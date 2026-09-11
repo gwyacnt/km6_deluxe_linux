@@ -194,3 +194,24 @@ The internal root uses `/dev/mapper/km6-linuxroot`; its boot filesystem uses
 the USB stick and confirmed Debian desktop boot. SSH verified the mapper root
 and boot filesystems, no USB disk, and active LightDM and Tailscale. A later
 power cycle also returned to the same internal Debian installation.
+
+## USB selection after checkpoint v0.2.0-rc2
+
+The early-boot selector now checks for any enumerated external USB device,
+including the keyboard/mouse receiver and external hubs. Built-in USB root
+hubs and interface entries do not count. It allows up to two additional
+seconds for enumeration before opening the normal 15-second Android-default
+menu when no external device is found.
+
+When a device is found, it selects **internal Debian**, clears and verifies
+the existing Android fallback flag, and skips the menu. It neither mounts nor
+executes files from the USB device. `/run/km6-menu-trigger` records `usb:<port>`
+or `menu`, and `/run/km6-menu-choice` retains the existing numeric result.
+The Android fallback on errors and reset-held USB rescue path are preserved.
+Devices must enumerate: a charge-only cable cannot serve as a selector.
+
+`test_usb_present.py` checks empty buses, host hubs, interface entries and
+external devices using fake sysfs directories. The pre-change release tag
+v0.2.0-rc2 remains unchanged. Its downloadable installer uses the old menu
+policy. New exports carry the installed initramfs into the internal installer
+bundle so a subsequent installation retains the current selection policy.

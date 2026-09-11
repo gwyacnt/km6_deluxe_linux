@@ -14,16 +14,30 @@ if [ "$next" != android ]; then
     echo 'KM6: Android fallback is not armed; continuing to Debian.' >/dev/console
     exit 0
 fi
-old_printk=$(cat /proc/sys/kernel/printk)
-echo 3 >/proc/sys/kernel/printk
-rm -f /run/km6-menu-choice
-/usr/lib/km6-dualboot/openvt -c 8 -s -w -- sh -c '
+rm -f /run/km6-menu-choice /run/km6-menu-trigger
+# Allow devices that are still enumerating up to two additional seconds.
+# USB is a selector only: continue into internal Debian without reading media.
+usb_device=
+for attempt in 0 1 2; do
+    usb_device=$(/bin/km6-usb-present) && break
+    [ "$attempt" = 2 ] || sleep 1
+done
+if [ -n "$usb_device" ]; then
+    echo 10 > /run/km6-menu-choice
+    echo "usb:$usb_device" > /run/km6-menu-trigger
+    echo "KM6: USB device $usb_device detected; selecting Debian." >/dev/console
+else
+    echo menu > /run/km6-menu-trigger
+    old_printk=$(cat /proc/sys/kernel/printk)
+    echo 3 >/proc/sys/kernel/printk
+    /usr/lib/km6-dualboot/openvt -c 8 -s -w -- sh -c '
     setfont /usr/share/consolefonts/km6.psf
     /bin/km6-menu --timeout 15
     echo $? > /run/km6-menu-choice
 '
+    echo "$old_printk" >/proc/sys/kernel/printk
+fi
 choice=$(cat /run/km6-menu-choice 2>/dev/null) || choice=2
-echo "$old_printk" >/proc/sys/kernel/printk
 if [ "$choice" = 10 ]; then
     if fw_setenv -c "$config" km6_next; then
         next=$(fw_printenv -c "$config" -n km6_next 2>/dev/null) || next=
