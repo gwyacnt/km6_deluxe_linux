@@ -10,7 +10,7 @@ Debian boot with the USB stick removed was confirmed on HDMI and over SSH.
 The menu defaults to Android after 15 seconds; selecting Debian continues into
 its desktop. Ethernet, HDMI display/audio and Tailscale work in Debian.
 
-**Checkpoint: `v0.2.0-rc1`.** See [the reproduction guide](docs/REPRODUCE.md)
+**Checkpoint: `v0.2.0-rc2`.** See [the reproduction guide](docs/REPRODUCE.md)
 and its matching GitHub release for the prepared USB installer and checksums.
 The device setup is hardware-tested. The newly packaged clean installer still
 needs a fresh USB boot and complete installation test; it is a release candidate.
@@ -41,7 +41,7 @@ The enclosing workspace has three directories:
 - `releases/`: the three requested firmware/flasher binaries plus checksums, for manual release upload; ignored by Git.
 - `source/`: this maintained source tree and documentation, tracked by Git.
 
-The root `.gitignore` allows only itself and `source/`. Initialize Git in the enclosing KM6 directory. On GitHub, open `source/` to read this README.
+The root `.gitignore` allows the root README, itself and `source/`. The root README contains the restoration instructions.
 
 ## Build source
 

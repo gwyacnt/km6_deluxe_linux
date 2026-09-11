@@ -1,4 +1,4 @@
-# Reproduce checkpoint v0.2.0-rc1
+# Reproduce checkpoint v0.2.0-rc2
 
 This checkpoint preserves the working **Android-default 15-second menu** and
 internal Debian desktop. It predates the proposed USB-presence selection rule.
@@ -6,17 +6,19 @@ The source tag alone is not an OS image: use its matching release assets.
 
 ## Downloads
 
-From [v0.2.0-rc1](https://github.com/gwyacnt/km6_deluxe_linux/releases/tag/v0.2.0-rc1):
+From [v0.2.0-rc2](https://github.com/gwyacnt/km6_deluxe_linux/releases/tag/v0.2.0-rc2):
 
 - `km6-debian-desktop-installer.img.xz`: clean persistent Debian USB image.
 - `km6-installer-bundle.tar.xz`: partition metadata, initramfs and installer sources used in that image.
 - `packages.tsv`: installed Debian package versions.
 - `SHA256SUMS`: hashes of these assets.
 
-The matching Android base and Windows flasher are already hosted in
-[v0.1.0](https://github.com/gwyacnt/km6_deluxe_linux/releases/tag/v0.1.0):
-`modified-km6.img`, `V3_setup_V3.1.6.exe` and their checksums.
-The unmodified stock image is available there for recovery.
+The same release also includes `modified-km6.img`,
+`KM6-QTT2.200903.001-V4.20201026.img` and `V3_setup_V3.1.6.exe`.
+No older release or separate upstream image/tool download is required.
+The tagged `source/reproduce.py` downloads these pinned assets and writes the
+USB image on a Linux PC using Python 3, without another image-writing program.
+See the root README for the exact commands and host requirements.
 
 ## Short installation path
 
@@ -30,7 +32,7 @@ validated; the underlying internal installation and boot configuration are.
    external media and wipe/factory-reset afterward, then verify Android starts.
    Flashing and factory reset erase Android user data.
 2. Verify `SHA256SUMS`, decompress the installer, and write the **whole `.img`**
-   to an 8 GB or larger USB stick using an image writer. This erases that stick.
+   to an 8 GB or larger USB stick using the included `source/reproduce.py --usb DEVICE --write` tool (with sudo). This erases that stick.
 3. With the KM6 powered off, insert the stick, connect a keyboard, hold reset
    and apply power. The clean image is designed to ask for a new password for
    user `samer` on the HDMI console, then start Xfce. The password also serves
@@ -76,7 +78,7 @@ desktop starts automatically. VNC can be configured separately afterward.
 Check out the exact source with:
 
 ```sh
-git clone --branch v0.2.0-rc1 https://github.com/gwyacnt/km6_deluxe_linux.git
+git clone --branch v0.2.0-rc2 https://github.com/gwyacnt/km6_deluxe_linux.git
 ```
 
 `usb/export_installer.py` makes a sanitized USB image from a working internal

@@ -1,6 +1,7 @@
-# Track only the curated source tree and this policy.
+# Track the entry-point README, curated source tree and this policy.
 /*
 !/.gitignore
+!/README.md
 !/source/
 /source/**/__pycache__/
 /source/**/*.pyc
