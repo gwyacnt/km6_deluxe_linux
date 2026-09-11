@@ -4,8 +4,9 @@ Target: a timed HDMI menu on every normal power-on, defaulting to Android,
 with Debian as the second choice. Both systems will use separate areas of
 internal eMMC. The final system must not require a USB stick or the reset button.
 
-**Device-specific installation scripts are under test. Internal storage has been
-prepared and the Debian copy verified; internal OS boot is not yet confirmed.**
+**Android TV and internal Debian desktop boot are confirmed. Debian was tested
+with the USB stick removed. The clean release installer remains a candidate
+until its separate fresh-media installation test.**
 
 ## Menu prototype
 
@@ -150,7 +151,7 @@ a local-top script, creates `/dev/mapper/km6-linuxboot` and
 `/dev/mapper/km6-linuxroot` only when the latter is the requested root device.
 This maps dedicated physical regions; no Debian disk image is stored inside
 Android's filesystem. The hook includes dmsetup and dm_mod when the mapper
-binary is installed. Internal boot with these mappings remains untested.
+binary is installed. Internal Debian boot with these mappings is confirmed.
 
 `build_tools.py` builds static ARM64 menu and mapper executables with the
 preserved GCC-14 toolchain and cross-libc files. `test_map.py` exercises the
@@ -189,6 +190,7 @@ without `--apply` it only validates. Activation backs up the CRC-valid
 environment and verifies that only `km6_internal` and `bootcmd` changed.
 
 The internal root uses `/dev/mapper/km6-linuxroot`; its boot filesystem uses
-`/dev/mapper/km6-linuxboot`. Final acceptance remains Android timeout boot and
-Debian desktop boot with the USB stick removed, including SSH, Ethernet,
-audio and persistent services. Keep the working USB available during testing.
+`/dev/mapper/km6-linuxboot`. The user confirmed Android timeout boot after the layout change, then removed
+the USB stick and confirmed Debian desktop boot. SSH verified the mapper root
+and boot filesystems, no USB disk, and active LightDM and Tailscale. A later
+power cycle also returned to the same internal Debian installation.

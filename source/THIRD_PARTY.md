@@ -7,3 +7,5 @@
 No blanket license has been assigned to all contents. Keep component license notices intact.
 
 - SC2 audio adaptations derive from Linux v6.18 `sound/soc/meson/{axg-card.c,g12a-tohdmitx.c,axg-tdm.h,meson-card.h,meson-codec-glue.h}` and Amlogic device trees: https://github.com/torvalds/linux/tree/v6.18/sound/soc/meson . Original SPDX and BayLibre/Jerome Brunet attribution are retained. SC2 register behavior was checked against https://github.com/CoreELEC/common_drivers/tree/5.15.196_20260225/sound/soc/amlogic/auge . See drivers/sc2-audio/README.md for details.
+
+- Desktop release add-ons: enhanced-h264ify 2.2.1 (MIT), https://github.com/alextrv/enhanced-h264ify ; uBlock Origin 1.74.0 (GPL-3.0), https://github.com/gorhill/uBlock . The original signed XPI packages retain their license files. Versions and hashes are recorded under performance/.

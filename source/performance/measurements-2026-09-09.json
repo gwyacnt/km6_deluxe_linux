@@ -1,0 +1,30 @@
+{
+  "compositor-on-1": {
+    "frames": 98,
+    "median_ms": 100.32000000000062,
+    "p95_ms": 133.96000000000004,
+    "over_25ms": 98,
+    "integer_iterations": 92010000
+  },
+  "compositor-off-3": {
+    "frames": 131,
+    "median_ms": 66.84000000000015,
+    "p95_ms": 133.26000000000022,
+    "over_25ms": 131,
+    "integer_iterations": 90230000
+  },
+  "compositor-off-4": {
+    "frames": 136,
+    "median_ms": 66.65999999999985,
+    "p95_ms": 133.26000000000022,
+    "over_25ms": 136,
+    "integer_iterations": 91460000
+  },
+  "compositor-off-720p": {
+    "frames": 170,
+    "median_ms": 50.47999999999956,
+    "p95_ms": 100.0600000000004,
+    "over_25ms": 170,
+    "integer_iterations": 89690000
+  }
+}

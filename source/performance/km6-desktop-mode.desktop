@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=KM6 desktop performance settings
+Exec=/usr/local/bin/km6-desktop-mode
+OnlyShowIn=XFCE;
+Terminal=false

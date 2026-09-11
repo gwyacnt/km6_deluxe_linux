@@ -1,14 +1,26 @@
-# KM6 Deluxe USB Linux
+# KM6 Deluxe Android / Debian dual boot
 
 Enable USB Linux boot on the tested Mecool KM6 Deluxe Rev2 (HDMI-marked chassis, S905X4, 4 GB RAM, 64 GB eMMC), while retaining the stock Android firmware components.
 
 ## Current status
 
-Modified firmware flashes successfully. Android works after recovery/factory reset, as with the stock image. Debian USB boots to an HDMI terminal. Manually loading the Maxio driver enabled Ethernet DHCP at 100 Mbps/full duplex.
+Android TV and the Debian Xfce desktop both boot from separate internal eMMC
+areas on the tested KM6 Deluxe Rev2 (S905X4, 4 GB RAM, 64 GB A1511X eMMC).
+Debian boot with the USB stick removed was confirmed on HDMI and over SSH.
+The menu defaults to Android after 15 seconds; selecting Debian continues into
+its desktop. Ethernet, HDMI display/audio and Tailscale work in Debian.
 
-The first automatic-Ethernet image skipped our module because upstream lists `maxio` as built in. Revision 2 uses the distinct module name `km6_maxio`, orders networkd after module loading, and saves an automatic boot report. On 2026-09-09 SSH and the saved boot report confirmed automatic module loading and Ethernet startup on revision 2. The link is 100 Mbps/full duplex; the KM6 advertises Gigabit, but its link partner advertises only 10/100 Mbps. Gigabit operation remains unverified. CoreELEC boot remains unresolved. No Linux installation to internal storage has been tested.
+**Checkpoint: `v0.2.0-rc1`.** See [the reproduction guide](docs/REPRODUCE.md)
+and its matching GitHub release for the prepared USB installer and checksums.
+The device setup is hardware-tested. The newly packaged clean installer still
+needs a fresh USB boot and complete installation test; it is a release candidate.
+No USB-presence automatic-selection rule is included in this checkpoint.
 
-HDMI stereo audio is confirmed working at 48 kHz, 16-bit: both channel tones were heard clearly on 2026-09-09. The revision 3 image builder includes the tested drivers, device tree and automatic mixer routing by default. Basic HDMI display output also passed. Other audio formats, remote control and hardware video decoding remain unverified. See `docs/BUILD-STATUS.md` for the build commands.
+Firefox uses Panfrost/WebRender, but video decoding remains software-only.
+The desktop defaults to 720p without Xfce compositing; `km6-desktop-mode sharp`
+selects 1080p. See [performance measurements](performance/README.md).
+Ethernet currently negotiates 100 Mbps/full duplex with the tested router;
+Gigabit operation, the infrared remote and CoreELEC remain unverified.
 
 ## Why modify the firmware?
 

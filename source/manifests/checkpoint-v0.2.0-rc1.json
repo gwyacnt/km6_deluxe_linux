@@ -1,0 +1,13 @@
+{
+  "date": "2026-09-11",
+  "boot_policy": "15-second menu; Android default; Debian selected with keyboard; no USB presence override",
+  "running_files": {
+    "/boot/boot.config": "c5fcd02dff09d5f3a09f568b6b68ac6735f6cfff2a80792030df8e08b8d66bf2",
+    "/boot/bootscript": "aa4e2226a6a6d4adc7f6922a20fae73588ff9a31a72503dc0944f6b6ccbdb4bd",
+    "/boot/uInitrd-km6-menu.img": "3dd90d9d3869bfbd427fa0faa040526a9c80e7201241b3626609ea79d7ee175d",
+    "/boot/km6-sc2-audio-test.dtb": "864561fc6ac56dd9f61ce349fbc8e1a262e71f2627f2caec78b6dee5cf86f0cc",
+    "/boot/vmlinuz-6.18.49-meson64": "a9bba04ebd54951ac22264ac48425abd92f2b812325fe2d287c01541059dea6d",
+    "/usr/local/bin/km6-desktop-mode": "87ba76174f6f1b49f23bdc15f310b02d545f8a934951b8cea7cae848b8b7f164",
+    "/etc/firefox/policies/policies.json": "ff81b534a5e6f6713aac37be652d06fd841f3f117ae01dbf5a888799b1c09fff"
+  }
+}

@@ -1,0 +1,13 @@
+#!/bin/sh
+# Fast mode trades display resolution for less rendering work on the Mali-G31.
+set -eu
+config="${XDG_CONFIG_HOME:-$HOME/.config}/km6"
+mkdir -p "$config"
+mode="${1:-$(cat "$config/desktop-mode" 2>/dev/null || echo fast)}"
+case "$mode" in fast) resolution=1280x720 ;; sharp) resolution=1920x1080 ;; *) echo 'Usage: km6-desktop-mode [fast|sharp]' >&2; exit 2 ;; esac
+printf '%s\n' "$mode" > "$config/desktop-mode"
+xfconf-query -c xfwm4 -p /general/use_compositing -s false
+# A separate VNC desktop has no HDMI output and keeps its requested geometry.
+if xrandr --query | grep -q '^HDMI-1 connected'; then
+    xrandr --output HDMI-1 --mode "$resolution" --rate 60
+fi
