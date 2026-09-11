@@ -13,11 +13,11 @@ internal Debian automatically. Without USB, the menu defaults to Android after
 Ethernet, HDMI display/audio and Tailscale work in Debian; Ethernet reliability
 after warm restarts remains an open issue. See [the developer handoff](docs/HANDOFF.md).
 
-**Checkpoint: `v0.2.0-rc2`.** See [the reproduction guide](docs/REPRODUCE.md)
+**Checkpoint: `v0.2.0-rc3`.** See [the reproduction guide](docs/REPRODUCE.md)
 and its matching GitHub release for the prepared USB installer and checksums.
 The device setup is hardware-tested. The newly packaged clean installer still
 needs a fresh USB boot and complete installation test; it is a release candidate.
-No USB-presence automatic-selection rule is included in this checkpoint.
+This checkpoint includes the current USB-presence automatic-selection rule.
 
 Firefox uses Panfrost/WebRender, but video decoding remains software-only.
 The desktop defaults to 720p without Xfce compositing; `km6-desktop-mode sharp`

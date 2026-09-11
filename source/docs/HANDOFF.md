@@ -70,10 +70,10 @@ been tested here.
 2. **Restore validation.** The clean release installer passed offline checks,
    but has not completed a fresh-stick boot and end-to-end install test.
    Test on a recoverable device before calling it a stable restoration path.
-3. **Package the new selector.** Main includes the source, and the live device
-   has the new initramfs. The current downloadable release does not. Export
-   and validate a new sanitized installer/release to reproduce this behavior
-   without applying source changes manually; do not move the old tag.
+3. **Validate the new release on hardware.** `v0.2.0-rc3` packages the installed
+   USB selector in both the USB boot image and internal-install bundle. The
+   old rc2 tag remains unchanged. Complete a fresh-media installation test
+   before calling the new restore package stable.
 4. **Performance.** Panfrost/WebRender already accelerates rendering; browser
    video decoding remains software-only. 720p/no Xfce compositor improves
    measured animation performance, but Android-like YouTube performance is
@@ -127,7 +127,9 @@ for this installation. The Ethernet/audio fixes use `km6_maxio.ko`,
 restore release. Its stock ROM, modified ROM, flasher and Debian installer are
 all in that same GitHub release. Follow the root README for restoration.
 `9a0bc1a` adds USB selection and refreshes future exports from the installed
-initramfs. Later handoff/documentation commits do not replace release assets.
+initramfs. `v0.2.0-rc3` supplies a new sanitized export with this installed boot policy,
+plus all required firmware/flasher assets in the same release. See its
+`validation.json` and pinned `checkpoint-assets.json`.
 
 A complete rebuild of an existing dual-boot device must first restore the
 original Android partition layout by reflashing. `km6-install-internal` is a

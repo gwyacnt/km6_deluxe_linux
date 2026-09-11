@@ -1,6 +1,6 @@
 # KM6 Deluxe: Android TV + internal Debian
 
-**Restore checkpoint: [v0.2.0-rc2](https://github.com/gwyacnt/km6_deluxe_linux/releases/tag/v0.2.0-rc2).**
+**Restore checkpoint: [v0.2.0-rc3](https://github.com/gwyacnt/km6_deluxe_linux/releases/tag/v0.2.0-rc3).**
 All required images and the Amlogic flasher are attached to **that same release**.
 The USB-writing tool and installation source are in this tag. No files from a
 different release or the author's private working folder are required.
@@ -10,15 +10,15 @@ USB device, including the keyboard/mouse receiver, selects internal Debian
 automatically. With no USB device connected, the 15-second menu defaults to
 Android. Both paths were confirmed on the device. Ethernet failed after one
 warm restart and recovered after removing power; that issue remains open.
-The release below remains the pre-change restore point.
+The release below includes this USB-selection policy.
 
 **Continue development with Codex:** start with the [developer handoff](source/docs/HANDOFF.md).
 The [conversation archive](source/docs/conversation/README.md) preserves the
 project discussion. Root [AGENTS.md](AGENTS.md) provides instructions for Codex.
 
-This checkpoint provides a 15-second boot menu with **Android as default** and
-Debian as the second choice. Both operating systems use internal eMMC. It
-does **not** contain the later proposed USB-presence automatic-selection rule.
+This checkpoint preserves the current boot behavior: **USB connected → Debian;
+no USB → 15-second menu, Android default**. Both operating systems use internal
+eMMC. Personal credentials and service identities are excluded.
 
 ## Reproduce the setup
 
@@ -30,13 +30,13 @@ fresh-media boot and a complete installation using that package remain untested.
 1. Get the tagged source:
 
    ```sh
-   git clone --branch v0.2.0-rc2 https://github.com/gwyacnt/km6_deluxe_linux.git
+   git clone --branch v0.2.0-rc3 https://github.com/gwyacnt/km6_deluxe_linux.git
    cd km6_deluxe_linux
    python3 source/reproduce.py --download-all
    ```
 
    This downloads and verifies the images, flasher and installer bundle from
-   this release. Files are saved under `downloads/v0.2.0-rc2/`.
+   this release. Files are saved under `downloads/v0.2.0-rc3/`.
 
 2. Start from the original Android partition layout. For a complete rebuild
    of an already dual-booting box, reflash first; the installer is not an updater.
@@ -60,15 +60,18 @@ fresh-media boot and a complete installation using that package remain untested.
    mounted devices and partitions supplied instead of whole disks.
 
 4. Power off the KM6, insert the stick, connect a keyboard, hold reset and
-   apply power. Set a new password for `samer` at the HDMI prompt. In the
-   Debian desktop terminal, install to internal storage:
+   apply power. Set a new password for `samer` at the HDMI prompt. Press
+   **Ctrl+Alt+F2**, log in as `samer`, and install from that text console:
 
    ```sh
    sudo km6-install-internal --apply
    ```
 
-   After it reports completion, shut down, remove the stick and power on
-   normally. The menu will default to Android; choose Debian when wanted.
+   Use the text console because the installer stops the graphical desktop
+   while copying Debian. After it reports completion, shut down, remove the
+   stick and power on normally. Leave the receiver (or another USB peripheral) connected to start
+   Debian automatically. Disconnect all USB devices to get the 15-second
+   Android-default menu. No reset button is needed.
 
 The Android flasher is a Windows executable; a compatible environment is
 needed to run it. Python 3 and the host operating systems themselves are host
@@ -87,6 +90,8 @@ image download, compiler or driver-building tools are needed for this restore.
 | `packages.tsv` | Preserved installed package versions |
 | `SHA256SUMS` | Release asset checksums |
 | `INSTALL.md` | Detailed restoration instructions |
+| `checkpoint-v0.2.0-rc3.json` | Hashes of the working device’s critical files |
+| `validation.json` | Packaged-image checks and hardware-test limitations |
 
 The public image preserves the desktop, applications, drivers, audio/network
 fixes and boot configuration. It removes personal logins, password hashes,

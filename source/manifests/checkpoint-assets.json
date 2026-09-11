@@ -1,12 +1,12 @@
 {
-  "tag": "v0.2.0-rc2",
+  "tag": "v0.2.0-rc3",
   "usb_image": "km6-debian-desktop-installer.img.xz",
   "raw_image_size": 6711934976,
   "assets": [
     {
       "name": "INSTALL.md",
-      "size": 5665,
-      "sha256": "2bf5347d4584192a679b5969937d217cb3441e4072b289851b49e46057b9dd44"
+      "size": 6493,
+      "sha256": "1adea539a794eb8467ea0f07bd3530e1883cad8bef7a180198fce07324f0e85c"
     },
     {
       "name": "KM6-QTT2.200903.001-V4.20201026.img",
@@ -19,19 +19,19 @@
       "sha256": "e32dcbf6a485f0985a1119831289954b65b88496c684a48a8e69deab1c389f8b"
     },
     {
-      "name": "checkpoint-v0.2.0-rc2.json",
-      "size": 875,
-      "sha256": "b0a670dd4d385502126d05de5d0963719954c44bac1cae446adb86fd5ac31bc9"
+      "name": "checkpoint-v0.2.0-rc3.json",
+      "size": 1443,
+      "sha256": "6f2552a18e7c3a675df5f05d84e83285e02168ae31b5d28b6199b1047368c5d5"
     },
     {
       "name": "km6-debian-desktop-installer.img.xz",
-      "size": 519855796,
-      "sha256": "1f3d90ce689a63699064db66a4d2b561265ffbef859f0bf4061c033beead3237"
+      "size": 520000416,
+      "sha256": "6d98922bffe48ca2f5491a4195521b80e3c325ccd3b10f40774f7793432133d5"
     },
     {
       "name": "km6-installer-bundle.tar.xz",
-      "size": 14694808,
-      "sha256": "223cef658d345228ee65c29dc996dacfc574c06629f8a94cd68d0afad79974f7"
+      "size": 14699748,
+      "sha256": "a660c819293572eaa5190b03fd99b885c5c6705a97cc9b788786151effc5c42e"
     },
     {
       "name": "modified-km6.img",
@@ -42,6 +42,11 @@
       "name": "packages.tsv",
       "size": 17019,
       "sha256": "2ffd1118d731f73595a9738ca9c0a2e4b09793fdb202432b61e25113a61f635e"
+    },
+    {
+      "name": "validation.json",
+      "size": 2331,
+      "sha256": "96fa965cb7dbcce7cb944fc67547901c66cd97c39e41ea155085607a5e3f491d"
     }
   ]
 }

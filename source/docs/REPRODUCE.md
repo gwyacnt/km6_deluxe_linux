@@ -1,17 +1,20 @@
-# Reproduce checkpoint v0.2.0-rc2
+# Reproduce checkpoint v0.2.0-rc3
 
-This checkpoint preserves the working **Android-default 15-second menu** and
-internal Debian desktop. It predates the proposed USB-presence selection rule.
+This checkpoint preserves the current internal Android/Debian desktop setup:
+**any external USB device, including the receiver, automatically selects
+Debian; with no USB device, the 15-second menu defaults to Android**.
 The source tag alone is not an OS image: use its matching release assets.
 
 ## Downloads
 
-From [v0.2.0-rc2](https://github.com/gwyacnt/km6_deluxe_linux/releases/tag/v0.2.0-rc2):
+From [v0.2.0-rc3](https://github.com/gwyacnt/km6_deluxe_linux/releases/tag/v0.2.0-rc3):
 
 - `km6-debian-desktop-installer.img.xz`: clean persistent Debian USB image.
 - `km6-installer-bundle.tar.xz`: partition metadata, initramfs and installer sources used in that image.
 - `packages.tsv`: installed Debian package versions.
 - `SHA256SUMS`: hashes of these assets.
+- `checkpoint-v0.2.0-rc3.json`: hashes of critical files from the working device.
+- `validation.json`: image checks and explicit hardware-test coverage.
 
 The same release also includes `modified-km6.img`,
 `KM6-QTT2.200903.001-V4.20201026.img` and `V3_setup_V3.1.6.exe`.
@@ -27,8 +30,9 @@ with model A1511X and the recorded stock Android layout. This is not a generic
 Amlogic installer. The packaged USB installer is not yet end-to-end hardware
 validated; the underlying internal installation and boot configuration are.
 
-1. If the device is not already on our modified Android firmware, flash
-   `modified-km6.img` with USB Burning Tool. On this unit, boot recovery without
+1. Start from the original Android partition layout. For a complete rebuild
+   of an already dual-booting device, reflash first. Flash `modified-km6.img`
+   with USB Burning Tool. On this unit, boot recovery without
    external media and wipe/factory-reset afterward, then verify Android starts.
    Flashing and factory reset erase Android user data.
 2. Verify `SHA256SUMS`, decompress the installer, and write the **whole `.img`**
@@ -37,7 +41,9 @@ validated; the underlying internal installation and boot configuration are.
    and apply power. The clean image is designed to ask for a new password for
    user `samer` on the HDMI console, then start Xfce. The password also serves
    as the sudo password. Verify Ethernet, display and sound before installing.
-4. In the USB desktop terminal, run:
+4. Press **Ctrl+Alt+F2** and log in as `samer` on the text console. Run the
+   installer there, because it stops the graphical desktop while copying:
+
 
    ```sh
    sudo km6-install-internal --apply
@@ -47,8 +53,10 @@ validated; the underlying internal installation and boot configuration are.
    shrinks Android data to 32 GiB, creates a 256 MiB Linux boot partition and
    approximately 23 GiB Debian root, copies the USB system, checks it, and
    enables the timed boot menu. Keep power connected until it reports completion.
-5. Shut down, remove the stick and power on normally. Android is the default;
-   select Debian with the keyboard when desired. No reset button is needed.
+5. Shut down and remove the installer stick. Power on with the keyboard/mouse
+   receiver connected to boot internal Debian automatically. With **all** USB
+   peripherals removed, the menu defaults to Android after 15 seconds.
+   No reset button is needed.
 
 Without `--apply`, the installer validates the target without writing eMMC.
 It deliberately refuses an already installed internal layout. Do not use it
@@ -73,12 +81,19 @@ TigerVNC is installed but its service is disabled in the clean image because
 the existing private VNC password/profile is excluded. The physical HDMI
 desktop starts automatically. VNC can be configured separately afterward.
 
+## Known limitation
+
+One warm restart produced repeated Ethernet link/DHCP loss; removing power
+restored networking. This release preserves the tested setup, including this
+unresolved limitation. See [HANDOFF.md](HANDOFF.md). It does not claim to fix
+that restart issue. The new installer still needs end-to-end hardware testing.
+
 ## Source and image maintenance
 
 Check out the exact source with:
 
 ```sh
-git clone --branch v0.2.0-rc2 https://github.com/gwyacnt/km6_deluxe_linux.git
+git clone --branch v0.2.0-rc3 https://github.com/gwyacnt/km6_deluxe_linux.git
 ```
 
 `usb/export_installer.py` makes a sanitized USB image from a working internal

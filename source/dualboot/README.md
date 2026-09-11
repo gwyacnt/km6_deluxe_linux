@@ -228,4 +228,5 @@ Android-default menu and Android boot.
 One preceding warm restart had unstable Ethernet carrier and repeated DHCP
 lease loss. The cold boot restored networking; its cause remains unresolved.
 See [HANDOFF.md](../docs/HANDOFF.md) for the driver-name difference and next
-diagnostic steps. The published rc2 installer still predates USB selection.
+diagnostic steps. The published rc2 installer still predates USB selection. The rc3 release
+packages the installed selector in a new sanitized installer and bundle.

@@ -1,0 +1,17 @@
+{
+  "date": "2026-09-11",
+  "boot_policy": "Any enumerated external USB device selects internal Debian; no USB gives 15-second menu with Android default",
+  "running_files": {
+    "/boot/uInitrd-km6-menu.img": "1f1c3241cdbc5e5479b2cfe3decb5474a7a81ab7f342a4d7cdb7d6b44e6f875d",
+    "/boot/km6-sc2-audio-test.dtb": "864561fc6ac56dd9f61ce349fbc8e1a262e71f2627f2caec78b6dee5cf86f0cc",
+    "/boot/vmlinuz-6.18.49-meson64": "a9bba04ebd54951ac22264ac48425abd92f2b812325fe2d287c01541059dea6d",
+    "/usr/local/lib/km6-dualboot/usb-present": "7c4c05c38c99e8543427dab824675d2872499c299e1549eb31c3e2415b78d641",
+    "/etc/initramfs-tools/hooks/km6-menu": "005d12e5d46a861547480aebc7ff02ed8a434609a52d29133c2be5fe1b8c50d9",
+    "/etc/initramfs-tools/scripts/local-premount/km6-menu": "463c44bb024dad61e3d515a16d5c00bb375405462e91c16acc37c624326788bb",
+    "/usr/local/bin/km6-desktop-mode": "87ba76174f6f1b49f23bdc15f310b02d545f8a934951b8cea7cae848b8b7f164",
+    "/etc/firefox/policies/policies.json": "ff81b534a5e6f6713aac37be652d06fd841f3f117ae01dbf5a888799b1c09fff",
+    "/lib/modules/6.18.49-meson64/extra/km6_maxio.ko": "b57df14f044cffa20d9f88a98e708df87ce4475d86cd87cee16f88e523a8cbe3",
+    "/lib/modules/6.18.49-meson64/extra/km6_sc2_card.ko": "35733d398b58b9c4e762163cdba415628f69423cdc0742deaf8b78dc1f1ecbb0",
+    "/lib/modules/6.18.49-meson64/extra/km6_sc2_tohdmitx.ko": "dc3ad964a4ff977cd8f49fb098091c927486929fcacc7a74100af83946ece98c"
+  }
+}
